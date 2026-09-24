@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Direcciones — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="carrito.html" class="cart-link">Carrito</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Mis Direcciones</h1>
+
+        <div class="tabs">
+            <a href="miPerfil.html" class="btn btn-secundario">Datos personales</a>
+            <a href="misPedidos.html" class="btn btn-secundario">Mis Pedidos</a>
+            <button class="activo">Mis Direcciones</button>
+            <a href="favoritos.html" class="btn btn-secundario">Favoritos</a>
+        </div>
+
+        <section class="seccion">
+            <h2>Direcciones guardadas</h2>
+            <div class="resumen-caja">
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <strong>Av. Providencia 1234, Depto 501</strong><br>
+                        Providencia, Santiago, RM
+                        <div style="margin-top:6px;"><span class="badge badge-oferta">Predeterminada</span></div>
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:flex-start;">
+                        <button class="btn btn-secundario">Editar</button>
+                        <button class="btn btn-peligro">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resumen-caja">
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <strong>Los Aromos 456, Casa 12</strong><br>
+                        Ñuñoa, Santiago, RM
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:flex-start;">
+                        <button class="btn btn-secundario">Editar</button>
+                        <button class="btn btn-peligro">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <h2>Agregar nueva dirección</h2>
+            <form data-formulario="direccion">
+                <div class="campo">
+                    <label for="calle">Calle</label>
+                    <input type="text" id="calle" data-validar="requerido,direccion" data-min="3">
+                    <span class="mensaje-error"></span>
+                </div>
+                <div class="campo">
+                    <label for="numero">Número</label>
+                    <input type="text" id="numero" data-validar="requerido,soloNumeros" data-min="1">
+                    <span class="mensaje-error"></span>
+                </div>
+                <div class="campo">
+                    <label for="comuna">Comuna / Ciudad</label>
+                    <input type="text" id="comuna" data-validar="requerido,soloLetras" data-min="3">
+                    <span class="mensaje-error"></span>
+                </div>
+                <div class="campo">
+                    <label for="region">Región</label>
+                    <input type="text" id="region" data-validar="requerido,soloLetras" data-min="3">
+                    <span class="mensaje-error"></span>
+                </div>
+                <button class="btn" type="submit">Guardar dirección</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

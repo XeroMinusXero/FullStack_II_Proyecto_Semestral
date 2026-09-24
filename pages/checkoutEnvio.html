@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Envío — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav><a href="checkoutDireccion.html">← Volver</a></nav>
+    </header>
+    <main>
+        <h1>Selecciona tu envío</h1>
+        <div class="pasos-checkout">
+            <span>1. Dirección</span>
+            <span class="activo">2. Envío</span>
+            <span>3. Pago</span>
+            <span>4. Confirmación</span>
+        </div>
+
+        <div class="resumen-caja">
+            <label style="display:flex;justify-content:space-between;align-items:center;">
+                <span><input type="radio" name="envio" checked> <strong>Envío estándar</strong> — 3 a 5 días hábiles</span>
+                <strong>$3.500</strong>
+            </label>
+        </div>
+        <div class="resumen-caja">
+            <label style="display:flex;justify-content:space-between;align-items:center;">
+                <span><input type="radio" name="envio"> <strong>Envío express</strong> — 24 horas</span>
+                <strong>$7.900</strong>
+            </label>
+        </div>
+        <div class="resumen-caja">
+            <label style="display:flex;justify-content:space-between;align-items:center;">
+                <span><input type="radio" name="envio"> <strong>Retiro en tienda</strong> — Providencia</span>
+                <strong>Gratis</strong>
+            </label>
+        </div>
+
+        <a href="checkoutPago.html" class="btn">Continuar</a>
+        <a href="checkoutDireccion.html" class="btn btn-secundario">Atrás</a>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

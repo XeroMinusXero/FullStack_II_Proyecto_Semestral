@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Dirección — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="carrito.html">← Volver al carrito</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Finalizar Compra</h1>
+
+        <div class="pasos-checkout">
+            <span class="activo">1. Dirección</span>
+            <span>2. Envío</span>
+            <span>3. Pago</span>
+            <span>4. Confirmación</span>
+        </div>
+
+        <form data-formulario="checkout-direccion" class="ancho">
+            <h2>Dirección de despacho</h2>
+
+            <div class="resumen-caja">
+                <label style="display:flex;gap:8px;align-items:center;">
+                    <input type="radio" name="dir" value="guardada1" checked>
+                    <span>Av. Providencia 1234, Depto 501, Providencia, Santiago</span>
+                </label>
+            </div>
+            <div class="resumen-caja">
+                <label style="display:flex;gap:8px;align-items:center;">
+                    <input type="radio" name="dir" value="guardada2">
+                    <span>Los Aromos 456, Casa 12, Ñuñoa, Santiago</span>
+                </label>
+            </div>
+            <div class="resumen-caja">
+                <label style="display:flex;gap:8px;align-items:center;">
+                    <input type="radio" name="dir" value="nueva">
+                    <span>Usar una nueva dirección</span>
+                </label>
+            </div>
+
+            <h3 style="margin-top:16px;">Nueva dirección</h3>
+
+            <div class="campo">
+                <label for="calle">Calle</label>
+                <input type="text" id="calle" data-validar="requerido,direccion" data-min="3" data-opcional="true">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="numero">Número</label>
+                <input type="text" id="numero" data-validar="requerido,soloNumeros" data-opcional="true">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="comuna">Comuna / Ciudad</label>
+                <input type="text" id="comuna" data-validar="requerido,soloLetras" data-min="3" data-opcional="true">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="region">Región</label>
+                <input type="text" id="region" data-validar="requerido,soloLetras" data-min="3" data-opcional="true">
+                <span class="mensaje-error"></span>
+            </div>
+
+            <button class="btn" type="submit">Continuar</button>
+        </form>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos — Admin — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER — ADMIN</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="admin.html">Panel</a>
+            <a href="adminCatalogo.html">Catálogo</a>
+            <a href="adminPedidos.html">Pedidos</a>
+            <a href="adminDashboard.html">Reportes</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Administración de Pedidos</h1>
+
+        <div class="filtros">
+            <div class="campo">
+                <label>Buscar por N° pedido</label>
+                <input type="text" data-validar="soloNumeros" data-opcional="true">
+            </div>
+            <div class="campo">
+                <label>Estado</label>
+                <select>
+                    <option>Todos</option>
+                    <option>Pagado</option>
+                    <option>Preparando</option>
+                    <option>Despachado</option>
+                    <option>Entregado</option>
+                    <option>Cancelado</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label>Desde</label>
+                <input type="date" data-validar="fechaValida" data-opcional="true">
+            </div>
+            <div class="campo">
+                <label>Hasta</label>
+                <input type="date" data-validar="fechaValida" data-opcional="true">
+            </div>
+            <div class="campo" style="justify-content:flex-end;">
+                <button class="btn">Filtrar</button>
+            </div>
+        </div>
+
+        <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr><th>N°</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>#000201</td><td>Bastian González</td><td>15/03/2026</td><td>$18.900</td><td><span class="badge badge-oferta">En camino</span></td><td><button class="btn btn-secundario">Detalle</button></td></tr>
+                <tr><td>#000200</td><td>María Pérez</td><td>14/03/2026</td><td>$42.300</td><td><span class="badge badge-disponible">Entregado</span></td><td><button class="btn btn-secundario">Detalle</button></td></tr>
+                <tr><td>#000199</td><td>Juan Soto</td><td>13/03/2026</td><td>$23.700</td><td><span class="badge badge-disponible">Entregado</span></td><td><button class="btn btn-secundario">Detalle</button></td></tr>
+                <tr><td>#000198</td><td>Ana Vera</td><td>12/03/2026</td><td>$12.900</td><td><span class="badge badge-agotado">Cancelado</span></td><td><button class="btn btn-secundario">Detalle</button></td></tr>
+            </tbody>
+        </table>
+        </div>
+
+        <section class="seccion" style="margin-top:28px;">
+            <h2>Detalle del pedido #000201</h2>
+            <div class="resumen-caja">
+                <div class="fila"><span>Cliente</span><span>Bastian González</span></div>
+                <div class="fila"><span>Dirección</span><span>Av. Providencia 1234, Depto 501</span></div>
+                <div class="fila"><span>Ítems</span><span>2</span></div>
+                <div class="fila"><span>Total</span><span>$18.900</span></div>
+                <div class="fila"><span>Estado actual</span><span>En camino</span></div>
+            </div>
+
+            <div class="campo" style="max-width:400px;">
+                <label for="estado">Actualizar estado</label>
+                <select id="estado">
+                    <option>Preparando</option>
+                    <option>Despachado</option>
+                    <option>Entregado</option>
+                    <option>Cancelado</option>
+                </select>
+            </div>
+
+            <div class="campo" style="max-width:400px;">
+                <label for="seguimiento">N° de seguimiento</label>
+                <input type="text" id="seguimiento" data-validar="requerido" data-min="5">
+                <span class="mensaje-error"></span>
+            </div>
+
+            <button class="btn">Guardar cambios</button>
+            <button class="btn btn-peligro">Cancelar pedido</button>
+        </section>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

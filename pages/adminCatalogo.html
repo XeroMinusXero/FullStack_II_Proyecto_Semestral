@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenedor de Catálogo — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER — ADMIN</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="admin.html">Panel</a>
+            <a href="adminCatalogo.html">Catálogo</a>
+            <a href="adminPedidos.html">Pedidos</a>
+            <a href="adminDashboard.html">Reportes</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Mantenedor de Catálogo</h1>
+
+        <div class="barra-busqueda">
+            <input type="text" placeholder="Buscar por título, autor o ISBN..." data-validar="requerido" data-min="2" data-opcional="true">
+            <button class="btn">Buscar</button>
+        </div>
+
+        <div class="filtros">
+            <div class="campo">
+                <label>Estado</label>
+                <select>
+                    <option>Todos</option>
+                    <option>Activos</option>
+                    <option>Inactivos</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tabla-scroll">
+        <table>
+            <thead>
+                <tr><th>Título</th><th>Autor</th><th>ISBN</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Cien Años de Soledad</td><td>G. García Márquez</td><td>978-0307474728</td><td>$18.900</td><td>12</td><td><span class="badge badge-disponible">Activo</span></td><td><button class="btn btn-secundario">Editar</button></td></tr>
+                <tr><td>1984</td><td>G. Orwell</td><td>978-0451524935</td><td>$14.500</td><td>8</td><td><span class="badge badge-disponible">Activo</span></td><td><button class="btn btn-secundario">Editar</button></td></tr>
+                <tr><td>El Principito</td><td>A. Saint-Exupéry</td><td>978-0156012195</td><td>$12.900</td><td>20</td><td><span class="badge badge-disponible">Activo</span></td><td><button class="btn btn-secundario">Editar</button></td></tr>
+                <tr><td>La Sombra del Viento</td><td>C. Ruiz Zafón</td><td>978-0143034902</td><td>$21.300</td><td>0</td><td><span class="badge badge-agotado">Sin stock</span></td><td><button class="btn btn-secundario">Editar</button></td></tr>
+                <tr><td>Rayuela</td><td>J. Cortázar</td><td>978-8437604572</td><td>$17.400</td><td>5</td><td><span class="badge badge-disponible">Activo</span></td><td><button class="btn btn-secundario">Editar</button></td></tr>
+            </tbody>
+        </table>
+        </div>
+
+        <h2 style="margin-top:28px;">Registrar nuevo libro</h2>
+        <form data-formulario="admin-libro" class="ancho">
+            <div class="campo">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" data-validar="requerido,textoLibre" data-min="2" data-max="150">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="isbn">ISBN</label>
+                <input type="text" id="isbn" data-validar="requerido,isbn">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="precio">Precio</label>
+                <input type="number" id="precio" data-validar="requerido,numeroPositivo" step="0.01">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="stock">Stock inicial</label>
+                <input type="number" id="stock" data-validar="requerido,numeroNoNegativo">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="categoria">Categoría</label>
+                <select id="categoria" data-validar="requerido">
+                    <option value="">Seleccione...</option>
+                    <option>Novela</option>
+                    <option>Poesía</option>
+                    <option>Ensayo</option>
+                    <option>Infantil</option>
+                </select>
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="autor">Autor</label>
+                <input type="text" id="autor" data-validar="requerido,soloLetras" data-min="2">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="editorial">Editorial</label>
+                <input type="text" id="editorial" data-validar="requerido,textoLibre" data-min="2">
+                <span class="mensaje-error"></span>
+            </div>
+            <div class="campo">
+                <label for="sinopsis">Sinopsis</label>
+                <textarea id="sinopsis" rows="4" data-validar="requerido,textoLibre" data-min="20" data-max="1000"></textarea>
+                <span class="mensaje-error"></span>
+            </div>
+            <button class="btn" type="submit">Registrar libro</button>
+        </form>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

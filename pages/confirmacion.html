@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Confirmada — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="misPedidos.html">Mis Pedidos</a>
+        </nav>
+    </header>
+    <main style="text-align:center;padding-top:40px;">
+        <div style="font-size:4rem;">✅</div>
+        <h1 style="border:none;">¡Compra realizada con éxito!</h1>
+        <p style="font-size:1.1rem;">Tu pedido <strong>#000202</strong> ha sido confirmado.</p>
+
+        <div class="resumen-caja" style="text-align:left;max-width:520px;margin:20px auto;">
+            <h3>Resumen del pedido</h3>
+            <div class="fila"><span>Cien Años de Soledad × 2</span><span>$37.800</span></div>
+            <div class="fila"><span>1984 × 1</span><span>$14.500</span></div>
+            <div class="fila"><span>Envío</span><span>$3.500</span></div>
+            <div class="fila"><span>Total pagado</span><span>$55.800</span></div>
+            <h3 style="margin-top:16px;">Dirección de entrega</h3>
+            <p id="direccion-entrega">Av. Providencia 1234, Depto 501, Providencia, Santiago</p>
+        </div>
+
+        <p>Hemos enviado el comprobante a tu correo electrónico.</p>
+        <a href="catalogo.html" class="btn">Seguir comprando</a>
+        <a href="misPedidos.html" class="btn btn-secundario">Ver mis pedidos</a>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dir = new URLSearchParams(location.search).get('direccion');
+            const el = document.getElementById('direccion-entrega');
+            if (dir && el) el.textContent = decodeURIComponent(dir);
+        });
+    </script>
+
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

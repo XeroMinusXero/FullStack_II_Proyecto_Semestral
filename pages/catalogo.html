@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="ofertas.html">Ofertas</a>
+            <a href="favoritos.html">Favoritos</a>
+            <a href="carrito.html" class="cart-link">Carrito <span class="cart-count">3</span></a>
+        </nav>
+    </header>
+    <main>
+        <h1>Catálogo de Libros</h1>
+
+        <div class="barra-busqueda">
+            <input type="text" placeholder="Buscar por título, autor o ISBN..." data-validar="requerido" data-min="2" id="busqueda">
+            <button class="btn" onclick="alert('Búsqueda simulada')">Buscar</button>
+        </div>
+
+        <div class="filtros">
+            <div class="campo">
+                <label>Categoría</label>
+                <select>
+                    <option>Todas</option>
+                    <option>Novela</option>
+                    <option>Poesía</option>
+                    <option>Ensayo</option>
+                    <option>Infantil</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label>Género</label>
+                <select>
+                    <option>Todos</option>
+                    <option>Realismo mágico</option>
+                    <option>Ciencia ficción</option>
+                    <option>Policial</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label>Precio mínimo</label>
+                <input type="number" id="precioMin" data-validar="numeroNoNegativo" min="0">
+            </div>
+            <div class="campo">
+                <label>Precio máximo</label>
+                <input type="number" id="precioMax" data-validar="numeroNoNegativo" min="0">
+            </div>
+            <div class="campo">
+                <label>Ordenar por</label>
+                <select>
+                    <option>Relevancia</option>
+                    <option>Precio: Menor a Mayor</option>
+                    <option>Precio: Mayor a Menor</option>
+                    <option>Título A-Z</option>
+                    <option>Más recientes</option>
+                </select>
+            </div>
+            <div class="campo" style="justify-content:flex-end;">
+                <button class="btn">Aplicar filtros</button>
+            </div>
+        </div>
+
+        <div class="grid-libros">
+            <div class="card-libro">
+                <div class="portada portada-cien-anos">📖</div>
+                <div class="info">
+                    <div class="titulo">Cien Años de Soledad</div>
+                    <div class="autor">Gabriel García Márquez</div>
+                    <div class="precio">$18.900</div>
+                    <span class="badge badge-disponible">Disponible</span>
+                    <div class="acciones">
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                        <button class="btn" data-agregar>Agregar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-1984">📕</div>
+                <div class="info">
+                    <div class="titulo">1984</div>
+                    <div class="autor">George Orwell</div>
+                    <div class="precio">$14.500</div>
+                    <span class="badge badge-oferta">-15%</span>
+                    <div class="acciones">
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                        <button class="btn" data-agregar>Agregar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-principito">📗</div>
+                <div class="info">
+                    <div class="titulo">El Principito</div>
+                    <div class="autor">Antoine de Saint-Exupéry</div>
+                    <div class="precio">$12.900</div>
+                    <span class="badge badge-disponible">Disponible</span>
+                    <div class="acciones">
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                        <button class="btn" data-agregar>Agregar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-sombra-viento">📘</div>
+                <div class="info">
+                    <div class="titulo">La Sombra del Viento</div>
+                    <div class="autor">Carlos Ruiz Zafón</div>
+                    <div class="precio">$21.300</div>
+                    <span class="badge badge-agotado">Agotado</span>
+                    <div class="acciones">
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                        <button class="btn" disabled>Agregar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-rayuela">📙</div>
+                <div class="info">
+                    <div class="titulo">Rayuela</div>
+                    <div class="autor">Julio Cortázar</div>
+                    <div class="precio">$17.400</div>
+                    <span class="badge badge-disponible">Disponible</span>
+                    <div class="acciones">
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                        <button class="btn" data-agregar>Agregar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-ficciones">📔</div>
+                <div class="info">
+                    <div class="titulo">Ficciones</div>
+                    <div class="autor">Jorge Luis Borges</div>
+                    <div class="precio">$16.200</div>
+                    <span class="badge badge-disponible">Disponible</span>
+                    <div class="acciones">
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                        <button class="btn" data-agregar>Agregar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="paginacion">
+            <button>«</button>
+            <button class="activo">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>»</button>
+        </div>
+    </main>
+    <footer>
+        <div>© 2026 Librería The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

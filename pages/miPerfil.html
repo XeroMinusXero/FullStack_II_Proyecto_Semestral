@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="carrito.html" class="cart-link">Carrito <span class="cart-count">3</span></a>
+        </nav>
+    </header>
+    <main>
+        <h1>Mi Perfil</h1>
+
+        <div class="tabs">
+            <button class="activo">Datos personales</button>
+            <a href="misPedidos.html" class="btn btn-secundario">Mis Pedidos</a>
+            <a href="misDirecciones.html" class="btn btn-secundario">Mis Direcciones</a>
+            <a href="favoritos.html" class="btn btn-secundario">Favoritos</a>
+        </div>
+
+        <form data-formulario="perfil">
+            <h2 style="font-size:1.2rem;">Datos personales</h2>
+
+            <div class="campo">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" value="Bastian" data-validar="requerido,soloLetras" data-min="2">
+                <span class="mensaje-error"></span>
+            </div>
+
+            <div class="campo">
+                <label for="apellido">Apellido</label>
+                <input type="text" id="apellido" value="González" data-validar="requerido,soloLetras" data-min="2">
+                <span class="mensaje-error"></span>
+            </div>
+
+            <div class="campo">
+                <label for="email">Correo electrónico</label>
+                <input type="text" id="email" value="bastian@ejemplo.com" data-validar="requerido,email">
+                <span class="mensaje-error"></span>
+            </div>
+
+            <div class="campo">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono" value="+56 9 1234 5678" data-validar="requerido,telefono">
+                <span class="mensaje-error"></span>
+            </div>
+
+            <button class="btn" type="submit">Guardar cambios</button>
+            <a href="#" class="btn btn-secundario">Cambiar contraseña</a>
+        </form>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

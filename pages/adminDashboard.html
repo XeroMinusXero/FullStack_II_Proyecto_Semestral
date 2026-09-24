@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard y Reportes — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER — ADMIN</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="admin.html">Panel</a>
+            <a href="adminCatalogo.html">Catálogo</a>
+            <a href="adminPedidos.html">Pedidos</a>
+            <a href="adminDashboard.html">Reportes</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Dashboard y Reportes</h1>
+
+        <div class="kpi-grid">
+            <div class="kpi-card"><div class="etiqueta">Ventas del mes</div><div class="valor">$4.825.300</div></div>
+            <div class="kpi-card" style="background:var(--cafe-medio);"><div class="etiqueta">Pedidos</div><div class="valor">128</div></div>
+            <div class="kpi-card" style="background:var(--cafe-claro);"><div class="etiqueta">Ticket promedio</div><div class="valor">$37.700</div></div>
+            <div class="kpi-card" style="background:var(--negro-suave);"><div class="etiqueta">Clientes registrados</div><div class="valor">1.245</div></div>
+        </div>
+
+        <div class="filtros">
+            <div class="campo">
+                <label>Desde</label>
+                <input type="date" data-validar="fechaValida" data-opcional="true">
+            </div>
+            <div class="campo">
+                <label>Hasta</label>
+                <input type="date" data-validar="fechaValida" data-opcional="true">
+            </div>
+            <div class="campo" style="justify-content:flex-end;">
+                <button class="btn">Aplicar</button>
+                <button class="btn btn-secundario">Exportar CSV</button>
+            </div>
+        </div>
+
+        <div class="reporte-caja">
+            <h2>Evolución de ventas</h2>
+            <div style="height:200px;background:linear-gradient(to top,var(--cafe-claro),var(--cafe-oscuro));border-radius:6px;display:flex;align-items:flex-end;justify-content:space-around;padding:10px;">
+                <div style="background:var(--blanco);width:8%;height:30%;"></div>
+                <div style="background:var(--blanco);width:8%;height:55%;"></div>
+                <div style="background:var(--blanco);width:8%;height:42%;"></div>
+                <div style="background:var(--blanco);width:8%;height:70%;"></div>
+                <div style="background:var(--blanco);width:8%;height:60%;"></div>
+                <div style="background:var(--blanco);width:8%;height:85%;"></div>
+                <div style="background:var(--blanco);width:8%;height:75%;"></div>
+                <div style="background:var(--blanco);width:8%;height:95%;"></div>
+            </div>
+        </div>
+
+        <div class="reporte-caja">
+            <h2>Libros más vendidos</h2>
+            <div class="tabla-scroll">
+            <table>
+                <thead><tr><th>#</th><th>Título</th><th>Autor</th><th>Unidades</th><th>Monto</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>Cien Años de Soledad</td><td>G. García Márquez</td><td>42</td><td>$793.800</td></tr>
+                    <tr><td>2</td><td>1984</td><td>G. Orwell</td><td>31</td><td>$449.500</td></tr>
+                    <tr><td>3</td><td>El Principito</td><td>A. Saint-Exupéry</td><td>28</td><td>$361.200</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="reporte-caja">
+            <h2>Rotación de inventario</h2>
+            <div class="tabla-scroll">
+            <table>
+                <thead><tr><th>Título</th><th>Stock</th><th>Vendidos</th><th>Rotación</th></tr></thead>
+                <tbody>
+                    <tr><td>Cien Años de Soledad</td><td>12</td><td>42</td><td>Alta</td></tr>
+                    <tr><td>1984</td><td>8</td><td>31</td><td>Alta</td></tr>
+                    <tr><td>La Sombra del Viento</td><td>0</td><td>3</td><td>Baja</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="reporte-caja">
+            <h2>Valorización del inventario</h2>
+            <div class="fila"><span>Total libros</span><span>1.245</span></div>
+            <div class="fila"><span>Valor total</span><span>$18.240.500</span></div>
+        </div>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

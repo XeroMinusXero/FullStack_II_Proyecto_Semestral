@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Resumen — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav><a href="checkoutPago.html">← Volver</a></nav>
+    </header>
+    <main>
+        <h1>Revisar y confirmar</h1>
+        <div class="pasos-checkout">
+            <span>1. Dirección</span>
+            <span>2. Envío</span>
+            <span>3. Pago</span>
+            <span class="activo">4. Confirmación</span>
+        </div>
+
+        <div class="resumen-caja">
+            <h3>Productos</h3>
+            <div class="fila"><span>Cien Años de Soledad × 2</span><span>$37.800</span></div>
+            <div class="fila"><span>1984 × 1</span><span>$14.500</span></div>
+        </div>
+
+        <div class="resumen-caja">
+            <h3>Dirección de entrega</h3>
+            <p id="direccion-entrega">Av. Providencia 1234, Depto 501, Providencia, Santiago</p>
+            <h3>Método de envío</h3>
+            <p>Envío estándar — 3 a 5 días hábiles</p>
+            <h3>Método de pago</h3>
+            <p>Tarjeta de crédito / débito</p>
+        </div>
+
+        <div class="resumen-caja">
+            <div class="fila"><span>Subtotal</span><span>$52.300</span></div>
+            <div class="fila"><span>Envío</span><span>$3.500</span></div>
+            <div class="fila"><span>Total</span><span>$55.800</span></div>
+        </div>
+
+        <a href="confirmacion.html" class="btn">Confirmar y pagar</a>
+        <a href="checkoutPago.html" class="btn btn-secundario">Atrás</a>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dir = new URLSearchParams(location.search).get('direccion');
+            const el = document.getElementById('direccion-entrega');
+            if (dir && el) el.textContent = decodeURIComponent(dir);
+        });
+    </script>
+
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

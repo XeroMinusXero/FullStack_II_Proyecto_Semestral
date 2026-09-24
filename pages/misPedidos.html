@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="carrito.html" class="cart-link">Carrito</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Mis Pedidos</h1>
+
+        <div class="tabs">
+            <a href="miPerfil.html" class="btn btn-secundario">Datos personales</a>
+            <button class="activo">Mis Pedidos</button>
+            <a href="misDirecciones.html" class="btn btn-secundario">Mis Direcciones</a>
+            <a href="favoritos.html" class="btn btn-secundario">Favoritos</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>N° Pedido</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#000123</td><td>12/03/2026</td><td>$52.300</td>
+                    <td><span class="badge badge-disponible">Entregado</span></td>
+                    <td><button class="btn btn-secundario">Ver detalle</button></td>
+                </tr>
+                <tr>
+                    <td>#000098</td><td>28/02/2026</td><td>$34.100</td>
+                    <td><span class="badge badge-disponible">Entregado</span></td>
+                    <td><button class="btn btn-secundario">Ver detalle</button></td>
+                </tr>
+                <tr>
+                    <td>#000201</td><td>15/03/2026</td><td>$18.900</td>
+                    <td><span class="badge badge-oferta">En camino</span></td>
+                    <td><button class="btn btn-secundario">Ver detalle</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Libro — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="ofertas.html">Ofertas</a>
+            <a href="favoritos.html">Favoritos</a>
+            <a href="carrito.html" class="cart-link">Carrito <span class="cart-count">3</span></a>
+        </nav>
+    </header>
+    <main>
+        <p style="font-size:.9rem;color:var(--cafe-claro);margin-bottom:14px;">
+            Inicio / Novela / <strong>Cien Años de Soledad</strong>
+        </p>
+
+        <div class="detalle-libro">
+            <div class="portada-grande portada-cien-anos">📖</div>
+            <div class="detalle-info">
+                <h1 style="border:none;">Cien Años de Soledad</h1>
+                <div class="autor" style="font-size:1.1rem;">Gabriel García Márquez</div>
+                <div class="estrellas">★★★★☆ <span style="color:var(--negro);font-size:.9rem;">(48 reseñas)</span></div>
+                <div class="precio-grande">$18.900</div>
+                <span class="badge badge-disponible">Disponible (12 unidades)</span>
+
+                <div style="display:flex;gap:10px;align-items:end;margin-top:14px;">
+                    <div class="campo" style="margin:0;">
+                        <label>Cantidad</label>
+                        <input type="number" value="1" min="1" max="12" id="cantidad" data-validar="numeroPositivo">
+                    </div>
+                    <button class="btn" data-agregar>Agregar al carrito</button>
+                    <button class="btn btn-secundario" data-protegido data-destino="favoritos">♡ Favorito</button>
+                </div>
+
+                <h3 style="margin-top:20px;">Sinopsis</h3>
+                <p>La historia de la familia Buendía en el mítico pueblo de Macondo. Una obra cumbre del realismo mágico
+                    latinoamericano que narra el devenir de siete generaciones y su destino inevitable.</p>
+
+                <h3>Ficha técnica</h3>
+                <table style="margin-top:8px;">
+                    <tr>
+                        <th>ISBN</th>
+                        <td>978-0307474728</td>
+                    </tr>
+                    <tr>
+                        <th>Editorial</th>
+                        <td>Sudamericana</td>
+                    </tr>
+                    <tr>
+                        <th>Año</th>
+                        <td>1967</td>
+                    </tr>
+                    <tr>
+                        <th>Páginas</th>
+                        <td>471</td>
+                    </tr>
+                    <tr>
+                        <th>Idioma</th>
+                        <td>Español</td>
+                    </tr>
+                    <tr>
+                        <th>Encuadernación</th>
+                        <td>Tapa blanda</td>
+                    </tr>
+                </table>
+
+                <button class="btn btn-secundario" style="margin-top:16px;"
+                    onclick="alert('Abriendo visor de muestra')">📖 Leer muestra</button>
+            </div>
+        </div>
+
+        <section class="seccion">
+            <h2>Reseñas de lectores</h2>
+            <div class="resumen-caja">
+                <strong>María González</strong> — ★★★★★
+                <p>Una obra maestra. Cada página es un universo.</p>
+            </div>
+            <div class="resumen-caja">
+                <strong>Pedro Ramírez</strong> — ★★★★☆
+                <p>Denso pero imprescindible. Vale cada página.</p>
+            </div>
+            <button class="btn" data-protegido>Escribir reseña</button>
+        </section>
+
+        <section class="seccion">
+            <h2>Libros relacionados</h2>
+            <div class="grid-libros">
+                <div class="card-libro">
+                    <div class="portada portada-amor-colera">📕</div>
+                    <div class="info">
+                        <div class="titulo">El Amor en los Tiempos del Cólera</div>
+                        <div class="autor">G. García Márquez</div>
+                        <div class="precio">$17.200</div>
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                    </div>
+                </div>
+                <div class="card-libro">
+                    <div class="portada portada-cronica-muerte">📗</div>
+                    <div class="info">
+                        <div class="titulo">Crónica de una Muerte Anunciada</div>
+                        <div class="autor">G. García Márquez</div>
+                        <div class="precio">$15.800</div>
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                    </div>
+                </div>
+                <div class="card-libro">
+                    <div class="portada portada-rayuela">📘</div>
+                    <div class="info">
+                        <div class="titulo">Rayuela</div>
+                        <div class="autor">Julio Cortázar</div>
+                        <div class="precio">$17.400</div>
+                        <a href="detalleLibro.html" class="btn btn-secundario">Ver</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div>© 2026 Librería The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="catalogo.html">Catálogo</a>
+            <a href="ofertas.html">Ofertas</a>
+            <a href="favoritos.html">Favoritos</a>
+            <a href="carrito.html" class="cart-link">Carrito <span class="cart-count">3</span></a>
+        </nav>
+    </header>
+    <main>
+        <h1>Mi Lista de Favoritos</h1>
+
+        <div class="grid-libros">
+            <div class="card-libro">
+                <div class="portada portada-cien-anos">📖</div>
+                <div class="info">
+                    <div class="titulo">Cien Años de Soledad</div>
+                    <div class="autor">Gabriel García Márquez</div>
+                    <div class="precio">$18.900</div>
+                    <span class="badge badge-disponible">Disponible</span>
+                    <div class="acciones">
+                        <button class="btn" data-agregar>Agregar al carrito</button>
+                        <button class="btn btn-peligro">Quitar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-1984">📕</div>
+                <div class="info">
+                    <div class="titulo">1984</div>
+                    <div class="autor">George Orwell</div>
+                    <div class="precio">$14.500</div>
+                    <span class="badge badge-disponible">Disponible</span>
+                    <div class="acciones">
+                        <button class="btn" data-agregar>Agregar al carrito</button>
+                        <button class="btn btn-peligro">Quitar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-libro">
+                <div class="portada portada-sombra-viento">📘</div>
+                <div class="info">
+                    <div class="titulo">La Sombra del Viento</div>
+                    <div class="autor">Carlos Ruiz Zafón</div>
+                    <div class="precio">$21.300</div>
+                    <span class="badge badge-agotado">Agotado</span>
+                    <div class="acciones">
+                        <button class="btn" disabled data-agregar>Agregar al carrito</button>
+                        <button class="btn btn-peligro">Quitar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div>© 2026 Librería The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

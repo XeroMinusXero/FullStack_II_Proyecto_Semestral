@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Pago — The Quiet Chapter</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">✒️ THE QUIET CHAPTER</div>
+        <nav><a href="checkoutEnvio.html">← Volver</a></nav>
+    </header>
+    <main>
+        <h1>Método de pago</h1>
+        <div class="pasos-checkout">
+            <span>1. Dirección</span>
+            <span>2. Envío</span>
+            <span class="activo">3. Pago</span>
+            <span>4. Confirmación</span>
+        </div>
+
+        <div class="resumen-caja">
+            <label style="display:flex;gap:8px;align-items:center;">
+                <input type="radio" name="pago" checked>
+                <span>💳 Tarjeta de crédito / débito</span>
+            </label>
+        </div>
+        <div class="resumen-caja">
+            <label style="display:flex;gap:8px;align-items:center;">
+                <input type="radio" name="pago">
+                <span>🏦 Transferencia bancaria</span>
+            </label>
+        </div>
+        <div class="resumen-caja">
+            <label style="display:flex;gap:8px;align-items:center;">
+                <input type="radio" name="pago">
+                <span>📱 Pago con QR</span>
+            </label>
+        </div>
+
+        <div class="resumen-caja" style="margin-top:20px;">
+            <div class="fila"><span>Subtotal</span><span>$52.300</span></div>
+            <div class="fila"><span>Envío</span><span>$3.500</span></div>
+            <div class="fila"><span>Total</span><span>$55.800</span></div>
+        </div>
+
+        <a href="checkoutResumen.html" class="btn">Continuar</a>
+        <a href="checkoutEnvio.html" class="btn btn-secundario">Atrás</a>
+    </main>
+    <footer>
+        <div>© 2026 The Quiet Chapter</div>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
