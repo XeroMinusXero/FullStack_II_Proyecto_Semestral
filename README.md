@@ -6,7 +6,7 @@
 
 **FullStack II · Proyecto Semestral**
 
-_Una experiencia de librería inspirada en el silencio, la lectura y el placer de descubrir una nueva historia._
+_Una experiencia de librería inspirada en el silencio, la lectura y el placer de descubrir un nuevo capítulo_
 
 </div>
 
@@ -16,15 +16,11 @@ _Una experiencia de librería inspirada en el silencio, la lectura y el placer d
 
 **The Quiet Chapter** es el prototipo de una librería online desarrollado para el proyecto semestral de FullStack II.
 
-La propuesta busca representar una experiencia de compra de libros de principio a fin, manteniendo una identidad visual editorial basada en tonos café oscuro, negro, crema y detalles cálidos.
-
-El prototipo contempla tanto la experiencia pública de navegación como los principales recorridos asociados a una cuenta de cliente y a la administración de la librería.
-
 ---
 
 ## Experiencia principal
 
-El recorrido del usuario está planteado alrededor de cuatro momentos:
+El recorrido del usuario está planteado de la siguiente forma:
 
 ```text
 Descubrir
@@ -68,10 +64,9 @@ La interfaz utiliza una estética de librería contemporánea, evitando una apar
 
 | Elemento | Dirección visual |
 |---|---|
-| **Paleta** | Café oscuro, negro carbón, crema, beige y acentos dorados/cobre |
+| **Paleta** | Café oscuro, negro, crema, beige y acentos dorados/cobre |
 | **Tipografía** | Serif editorial para títulos + sans-serif para información y controles |
 | **Componentes** | Tarjetas, botones redondeados, formularios, indicadores y paneles |
-| **Sensación** | Cálida, sobria, editorial y orientada a la lectura |
 | **Responsive** | Adaptación para escritorio y dispositivos móviles |
 
 ---
@@ -129,18 +124,9 @@ FullStack_II_Proyecto_Semestral/
 
 ## Alcance actual
 
-Esta versión corresponde al **prototipo visual e interactivo** del proyecto.
+Esta versión corresponde al **prototipo visual e medianamente interactivo** del proyecto.
 
 Las validaciones de campos de texto forman parte de la interacción funcional disponible en esta etapa. El resto de los recorridos busca representar visualmente cómo funcionaría la experiencia final de la librería.
-
-La intención de esta versión es validar principalmente:
-
-- La arquitectura visual de las pantallas.
-- La navegación entre las distintas áreas.
-- La experiencia del usuario.
-- La coherencia del flujo de compra.
-- La adaptación a distintos tamaños de pantalla.
-- La presentación de las funcionalidades definidas para el proyecto.
 
 ---
 
@@ -169,8 +155,6 @@ La intención de esta versión es validar principalmente:
 ## Nombre
 
 > **The Quiet Chapter**
->
-> Porque cada libro guarda un capítulo que todavía no conocemos.
 
 <div align="center">
 
