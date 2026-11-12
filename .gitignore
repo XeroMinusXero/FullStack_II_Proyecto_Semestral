@@ -1,0 +1,11 @@
+# Sistema operativo y editores (cada proyecto trae ademas su propio .gitignore)
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log
+
+# Respaldos locales que no deben subirse
+*_viejo/
+src_viejo/

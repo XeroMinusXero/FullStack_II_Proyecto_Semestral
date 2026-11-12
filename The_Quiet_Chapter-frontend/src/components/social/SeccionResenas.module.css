@@ -1,0 +1,5 @@
+.caja { background: var(--crema-hueso); border: 1px solid var(--beige); border-radius: var(--radio-md); padding: 18px; margin-bottom: 18px; }
+.resena { border-bottom: 1px solid var(--beige); padding: 14px 0; }
+.resena:last-child { border-bottom: 0; }
+.selector { padding: 6px 10px; border-radius: var(--radio-sm); border: 1px solid var(--beige-oscuro); background: var(--blanco); }
+.mini { padding: 4px 12px !important; font-size: .8rem !important; }

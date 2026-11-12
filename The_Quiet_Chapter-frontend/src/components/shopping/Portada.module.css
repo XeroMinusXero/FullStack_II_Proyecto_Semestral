@@ -1,0 +1,42 @@
+.portada {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Portada con imagen: fondo desenfocado + imagen completa encima */
+.conImagen {
+  position: relative;
+  overflow: hidden;
+  padding: 0 !important;
+  background: var(--cafe-noche) !important;
+}
+.fondo {
+  position: absolute;
+  inset: -12%;
+  background-image: var(--portada);
+  background-size: cover;
+  background-position: center;
+  filter: blur(16px) brightness(.55) saturate(1.1);
+}
+.imagen {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Fuera del carrito (tablas del admin) la mini portada no tenia tamano: se le da uno propio. */
+.portada:global(.mini-portada) {
+  min-width: 44px;
+  min-height: 62px;
+  border-radius: var(--radio-xs);
+  background-color: var(--cafe-medio);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}

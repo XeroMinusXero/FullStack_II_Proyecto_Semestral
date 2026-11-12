@@ -1,0 +1,679 @@
+/*
+ * Capa de pulido de la version React (se carga DESPUES de tema.css).
+ * tema.css se mantiene igual al sitio HTML original; aqui solo se corrigen fallas detectadas en
+ * pruebas y se refinan detalles, con la misma paleta tierra / crema / dorado.
+ */
+
+/* ---------------------------------------------------------------- grilla de libros
+ * Falla 2/3/5: .grid-libros era flex sin ancho fijo, asi que cada tarjeta media lo que su contenido
+ * (para el admin, sin boton "Agregar", quedaban angostas y desiguales). Ahora es grid real. */
+.grid-libros {
+    /* Flex centrado con ancho fijo por tarjeta: todas miden lo mismo y una fila incompleta
+     * (por ejemplo, al registrar un libro nuevo) queda centrada en vez de pegada a la izquierda. */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+}
+
+/* Botones de la tarjeta: siempre en una fila, repartidos en partes iguales */
+.card-libro .acciones {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 8px;
+}
+
+.card-libro .acciones > * {
+    min-width: 0;
+}
+
+.card-libro .acciones > span > .btn,
+.card-libro .acciones > .btn {
+    width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.grid-libros > .card-libro {
+    flex: 0 0 206px;
+    width: 206px;
+    min-width: 0;
+}
+
+.card-libro .portada-envoltorio {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Cinta de descuento sobre la portada */
+.cinta-oferta {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    background: linear-gradient(135deg, var(--cobre), var(--dorado));
+    color: var(--cafe-noche);
+    font-weight: 800;
+    font-size: .75rem;
+    letter-spacing: .04em;
+    padding: 5px 10px;
+    border-radius: var(--radio-pill);
+    box-shadow: 0 4px 12px rgba(26, 15, 10, .25);
+}
+
+/* Tarjetas de categoria del inicio */
+.grid-categorias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 18px;
+}
+
+.tarjeta-categoria {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 130px;
+    padding: 20px;
+    border-radius: 18px;
+    color: var(--crema);
+    text-decoration: none;
+    background:
+        radial-gradient(circle at 85% 15%, rgba(201, 162, 39, .28), transparent 55%),
+        linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-noche));
+    box-shadow: 0 8px 22px rgba(26, 15, 10, .14);
+    transition: transform var(--trans-media), box-shadow var(--trans-media);
+}
+
+.tarjeta-categoria:hover {
+    color: var(--crema);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(26, 15, 10, .22);
+}
+
+.tarjeta-categoria .inicial {
+    position: absolute;
+    top: 6px;
+    right: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 4.2rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(201, 162, 39, .22);
+}
+
+.tarjeta-categoria strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+.tarjeta-categoria small {
+    color: rgba(250, 246, 240, .7);
+}
+
+/* ---------------------------------------------------------------- hero
+ * Falla 4: los circulos decorativos (::before/::after, animados) quedaban encima del boton y
+ * capturaban el clic en el centro. Ademas el boton se estiraba a todo el ancho. */
+.hero {
+    align-items: flex-start;
+}
+
+.hero::before,
+.hero::after {
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero p {
+    margin: 0 0 26px;
+}
+
+.hero-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.hero .btn-dorado {
+    background: linear-gradient(135deg, var(--cobre), var(--dorado));
+    color: var(--cafe-noche);
+    padding: 13px 28px;
+    font-weight: 700;
+    box-shadow: 0 10px 26px rgba(201, 162, 39, .28);
+}
+
+.hero .btn-dorado::before {
+    background: linear-gradient(135deg, var(--dorado), #e0be55);
+}
+
+.hero .btn-dorado:hover {
+    color: var(--cafe-noche);
+}
+
+.hero .btn-contorno {
+    background: transparent;
+    color: var(--crema);
+    border: 1.5px solid rgba(250, 246, 240, .35);
+    box-shadow: none;
+    padding: 13px 26px;
+}
+
+.hero .btn-contorno::before {
+    background: rgba(250, 246, 240, .12);
+}
+
+.hero .btn-contorno:hover {
+    color: var(--crema);
+    border-color: rgba(250, 246, 240, .6);
+}
+
+/* ---------------------------------------------------------------- inicio de sesion / registro
+ * Rediseno 4/5: titulo centrado con su linea dorada y formulario centrado debajo. */
+.pagina-auth {
+    max-width: 520px;
+    margin: 12px auto 0;
+}
+
+.pagina-auth.ancha {
+    max-width: 640px;
+}
+
+.pagina-auth h1 {
+    text-align: center;
+}
+
+.pagina-auth h1::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pagina-auth .bajada {
+    text-align: center;
+    color: var(--cafe-tibio);
+    margin: -4px 0 22px;
+}
+
+.pagina-auth form {
+    margin: 0 auto;
+    max-width: none;
+}
+
+.pagina-auth .separador {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--beige-oscuro);
+    font-size: .8rem;
+    margin: 18px 0 12px;
+}
+
+.pagina-auth .separador::before,
+.pagina-auth .separador::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--beige);
+}
+
+/* ---------------------------------------------------------------- KPI
+ * Rediseno 1: con 6 tarjetas, auto-fit dejaba 5 + 1 sola. El panel usa 3 columnas fijas (3 + 3). */
+.kpi-grid.kpi-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kpi-card small {
+    position: relative;
+    z-index: 1;
+    color: rgba(250, 246, 240, .72);
+}
+
+.kpi-card .valor {
+    margin: 6px 0 4px;
+}
+
+a.kpi-card:hover {
+    color: var(--crema);
+}
+
+/* ---------------------------------------------------------------- cajas de panel (admin)
+ * Rediseno 3: secciones con cabecera alineada (titulo + accion) y misma altura lado a lado. */
+.panel-caja {
+    background: var(--blanco);
+    border: 1px solid rgba(107, 69, 48, .14);
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(26, 15, 10, .06);
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-caja > .cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    min-height: 46px;
+    margin-bottom: 14px;
+}
+
+.panel-caja > .cabecera h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.panel-caja > .cabecera .detalle {
+    color: var(--cafe-tibio);
+    font-size: .85rem;
+}
+
+.panel-caja .tabla-scroll {
+    flex: 1;
+}
+
+.panel-caja table {
+    box-shadow: none;
+}
+
+.mini-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.mini-kpi {
+    background: var(--blanco);
+    border: 1px solid rgba(107, 69, 48, .14);
+    border-left: 4px solid var(--dorado);
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.mini-kpi .numero {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--cafe-noche);
+    line-height: 1.1;
+}
+
+.mini-kpi .rotulo {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--cafe-tibio);
+}
+
+/* ---------------------------------------------------------------- control segmentado
+ * Rediseno 2: periodos del dashboard (y otros selectores) como un solo bloque en vez de botones sueltos. */
+.segmentado {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    background: var(--crema-hueso);
+    border: 1px solid rgba(107, 69, 48, .14);
+    border-radius: 12px;
+}
+
+.segmentado button {
+    border: 0;
+    background: transparent;
+    color: var(--cafe-tibio);
+    font-weight: 600;
+    font-size: .85rem;
+    padding: 8px 16px;
+    border-radius: 9px;
+    transition: background var(--trans-rapida), color var(--trans-rapida);
+}
+
+.segmentado button:hover {
+    color: var(--cafe-oscuro);
+    background: rgba(255, 255, 255, .7);
+}
+
+.segmentado button.activo {
+    background: var(--cafe-oscuro);
+    color: var(--crema);
+    box-shadow: 0 3px 10px rgba(26, 15, 10, .18);
+}
+
+/* Barra de filtros en una sola fila (dashboard, pedidos) */
+.barra-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px 20px;
+    background: rgba(255, 255, 255, .76);
+    border: 1px solid rgba(107, 69, 48, .14);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 26px;
+    box-shadow: 0 7px 24px rgba(26, 15, 10, .06);
+}
+
+.barra-filtros .campo {
+    margin-bottom: 0;
+    min-width: 170px;
+}
+
+.barra-filtros .empuje {
+    margin-left: auto;
+}
+
+/* ---------------------------------------------------------------- resenas
+ * Falla 1: las resenas usaban <header>/<footer>, que el tema pinta como la barra y el pie del sitio. */
+.resena-tarjeta {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+    background: var(--blanco);
+    border: 1px solid rgba(107, 69, 48, .14);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 14px rgba(26, 15, 10, .04);
+}
+
+.resena-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--crema);
+    background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+}
+
+.resena-cabecera {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.resena-cabecera .fecha {
+    color: var(--cafe-tibio);
+    font-size: .82rem;
+}
+
+.resena-texto {
+    margin: 8px 0 10px;
+    color: #4a3428;
+}
+
+.resena-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: .82rem;
+    color: var(--cafe-tibio);
+}
+
+.resena-acciones .btn {
+    min-height: 32px;
+    padding: 5px 12px;
+    font-size: .8rem;
+}
+
+.resumen-calificacion {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.resumen-calificacion .nota {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--cafe-noche);
+    line-height: 1;
+}
+
+/* ---------------------------------------------------------------- detalles varios */
+.text-muted {
+    color: var(--cafe-tibio) !important;
+}
+
+.breadcrumb-item a {
+    color: var(--cafe-tibio);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--cobre);
+}
+
+.form-check-input:checked {
+    background-color: var(--cafe-oscuro);
+    border-color: var(--cafe-oscuro);
+}
+
+.form-check-input:focus,
+.form-select:focus,
+.form-control:focus {
+    border-color: var(--cobre);
+    box-shadow: 0 0 0 3px rgba(184, 115, 51, .14);
+}
+
+.modal-content {
+    border-radius: 18px;
+    border: 1px solid rgba(107, 69, 48, .14);
+}
+
+.modal-header {
+    border-bottom-color: var(--beige);
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .kpi-grid.kpi-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .kpi-grid.kpi-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-libros {
+        gap: 14px;
+    }
+
+    .grid-libros > .card-libro {
+        flex-basis: calc(50% - 7px);
+        width: calc(50% - 7px);
+    }
+
+    .barra-filtros .empuje {
+        margin-left: 0;
+    }
+}
+
+/* Favorito como boton redondo sobre la portada (libera la fila de acciones de la tarjeta) */
+.favorito-flotante {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+}
+
+.favorito-flotante .btn {
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .92);
+    border: 0;
+    color: var(--terracota);
+    font-size: 1.05rem;
+    box-shadow: 0 4px 12px rgba(26, 15, 10, .22);
+}
+
+.favorito-flotante .btn[aria-pressed="true"] {
+    background: var(--terracota);
+    color: var(--crema);
+}
+
+.favorito-flotante .btn:hover {
+    color: var(--crema);
+}
+
+/* ================================================================ v3: marco editorial
+ * Sugerencia 2: la pagina se veia plana (todo crema de borde a borde). Ahora el contenido es una
+ * "hoja" crema sobre un fondo tipo escritorio/papel tostado, con doble filete dorado en los costados,
+ * como el margen de un libro impreso. En moviles el marco desaparece para no robar ancho. */
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: #e9dccb;
+    background-image:
+        radial-gradient(ellipse at 50% -10%, rgba(201, 162, 39, .10), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(74, 44, 30, .10), transparent 45%),
+        radial-gradient(circle at 100% 60%, rgba(160, 82, 45, .07), transparent 40%),
+        repeating-linear-gradient(90deg, rgba(74, 44, 30, .018) 0 2px, transparent 2px 7px);
+    background-attachment: fixed;
+}
+
+main {
+    position: relative;
+    flex: 1 0 auto;
+    background:
+        radial-gradient(circle at 12% 0%, rgba(184, 115, 51, .05), transparent 30%),
+        linear-gradient(180deg, #fbf8f3, var(--crema) 40%);
+    border-left: 1px solid rgba(184, 115, 51, .22);
+    border-right: 1px solid rgba(184, 115, 51, .22);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .5) inset, 0 0 70px rgba(26, 15, 10, .10);
+    padding-left: clamp(18px, 4.5vw, 64px);
+    padding-right: clamp(18px, 4.5vw, 64px);
+}
+
+main::before,
+main::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    pointer-events: none;
+    border-left: 1px solid rgba(201, 162, 39, .38);
+    border-right: 1px solid rgba(201, 162, 39, .18);
+}
+
+main::before {
+    left: 10px;
+}
+
+main::after {
+    right: 10px;
+}
+
+/* Viñeta dorada bajo los titulos de seccion centrados */
+.seccion > h2::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 10px;
+    margin: 10px auto 0;
+    background:
+        linear-gradient(90deg, transparent, rgba(201, 162, 39, .7)) left center / 52px 1px no-repeat,
+        linear-gradient(270deg, transparent, rgba(201, 162, 39, .7)) right center / 52px 1px no-repeat,
+        radial-gradient(circle, var(--dorado) 0 3px, transparent 3.5px) center / 10px 10px no-repeat;
+}
+
+/* Hero: textura de lineas finas y un libro abierto decorativo a la derecha */
+.hero {
+    background-image:
+        repeating-linear-gradient(115deg, rgba(250, 246, 240, .025) 0 1px, transparent 1px 14px),
+        linear-gradient(135deg, var(--cafe-noche), var(--cafe-oscuro) 55%, #6b4530);
+}
+
+.hero-emblema {
+    position: absolute !important;
+    right: clamp(24px, 6vw, 90px);
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(7rem, 14vw, 12rem);
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(201, 162, 39, .14);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Tarjetas: filete dorado al pasar el cursor */
+.card-libro {
+    border: 1px solid rgba(107, 69, 48, .10);
+}
+
+.card-libro:hover {
+    border-color: rgba(201, 162, 39, .45);
+}
+
+/* Tablas: fila con hover calido */
+tbody tr {
+    transition: background-color .15s;
+}
+
+tbody tr:hover td {
+    background-color: #fdf7ee;
+}
+
+/* Footer: ornamento centrado sobre el filete dorado */
+footer {
+    position: relative;
+}
+
+@media (max-width: 860px) {
+    main {
+        border-left: 0;
+        border-right: 0;
+        box-shadow: none;
+    }
+
+    main::before,
+    main::after {
+        display: none;
+    }
+
+    .hero-emblema {
+        display: none;
+    }
+}
+
+/* Barra de filtros del catalogo: desplegables y orden alineados */
+.barra-filtros .campo select,
+.barra-filtros .campo input {
+    min-height: 46px;
+}
+
+@media (max-width: 560px) {
+    .barra-filtros > * {
+        flex: 1 1 100%;
+    }
+}

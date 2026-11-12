@@ -1,0 +1,7 @@
+.contenedor { width: 100%; overflow-x: auto; }
+.svg { width: 100%; min-width: 300px; max-height: 340px; height: auto; display: block; }
+.guia { stroke: var(--beige); stroke-width: 1; }
+.barra { fill: var(--terracota); transition: fill .2s; }
+.barra:hover { fill: var(--dorado); }
+.etiqueta { font-size: 12px; fill: var(--cafe-tibio); font-family: 'Inter', sans-serif; }
+.maximo { font-size: .8rem; color: var(--cafe-tibio); text-align: right; }

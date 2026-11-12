@@ -1,163 +1,50 @@
-<div align="center">
-
 # The Quiet Chapter
 
-### Librería online — Prototipo visual interactivo
+Librería en línea construida con **arquitectura de microservicios** (Spring Boot) y un **frontend en React**,
+desarrollada para la asignatura de Desarrollo Fullstack.
 
-**FullStack II · Proyecto Semestral**
-
-_Una experiencia de librería inspirada en el silencio, la lectura y el placer de descubrir un nuevo capítulo_
-
-</div>
-
----
-
-## Sobre el proyecto
-
-**The Quiet Chapter** es el prototipo de una librería online desarrollado para el proyecto semestral de FullStack II.
-
----
-
-## Experiencia principal
-
-El recorrido del usuario está planteado de la siguiente forma:
-
-```text
-Descubrir
-   ↓
-Explorar el catálogo
-   ↓
-Conocer un libro
-   ↓
-Agregar al carrito
-   ↓
-Iniciar compra
-   ↓
-Dirección → Envío → Pago → Resumen
-   ↓
-Confirmación
+```
+React (Vite, 5173) ──/api──► API Gateway (8090) ──► 9 microservicios ──► 1 base MySQL por servicio (XAMPP)
 ```
 
-También se contemplan experiencias complementarias como:
+## Estructura del repositorio
 
-- Catálogo y búsqueda de libros.
-- Filtros y ordenamiento.
-- Detalle de un libro.
-- Ofertas.
-- Favoritos.
-- Carrito de compra.
-- Registro e inicio de sesión.
-- Perfil del cliente.
-- Direcciones guardadas.
-- Historial de pedidos.
-- Flujo de checkout.
-- Panel administrativo.
-- Gestión de catálogo e inventario.
-- Administración de pedidos.
-- Reportes y analítica.
-
----
-
-## Identidad visual
-
-La interfaz utiliza una estética de librería contemporánea, evitando una apariencia excesivamente tecnológica.
-
-| Elemento | Dirección visual |
+| Carpeta | Contenido |
 |---|---|
-| **Paleta** | Café oscuro, negro, crema, beige y acentos dorados/cobre |
-| **Tipografía** | Serif editorial para títulos + sans-serif para información y controles |
-| **Componentes** | Tarjetas, botones redondeados, formularios, indicadores y paneles |
-| **Responsive** | Adaptación para escritorio y dispositivos móviles |
+| `The_Quiet_Chapter-backend/` | API Gateway + 9 microservicios Spring Boot 4.1.1 (Java 17), scripts SQL y colección Postman en `docs/` |
+| `The_Quiet_Chapter-frontend/` | Vite + React 19 + TypeScript, Bootstrap 5, React Router |
+| `Documentos/` | Diagramas UML y plantilla de requerimientos (HU) |
 
----
+## Microservicios
 
-## Flujos destacados
+| Servicio | Puerto | Base de datos |
+|---|---|---|
+| catalog-service | 8080 | tqc_catalogo_db |
+| cart-service | 8081 | tqc_carrito_db |
+| checkout-service | 8082 | tqc_checkout_db |
+| order-service | 8083 | tqc_pedidos_db |
+| user-service | 8084 | tqc_usuarios_db |
+| social-service | 8085 | tqc_social_db |
+| promo-service | 8086 | tqc_promo_db |
+| notif-service | 8087 | tqc_notif_db |
+| report-service | 8088 | — (consolida datos de los demás) |
+| **api-gateway** | **8090** | — |
 
-### Visitante → Cliente
+El frontend solo habla con el **API Gateway**. Las llamadas entre servicios usan rutas `/internal/**`
+protegidas con una clave interna; el gateway no las expone hacia afuera.
 
-El visitante puede recorrer la librería y explorar su catálogo sin necesidad de iniciar sesión.
+## Cómo ejecutar
 
-Cuando una acción requiere una cuenta, el flujo conduce al usuario hacia el inicio de sesión o registro antes de continuar con la experiencia correspondiente.
+1. **XAMPP**: iniciar MySQL y ejecutar `The_Quiet_Chapter-backend/docs/crear_bases_xampp.sql`.
+2. **Backend**: levantar los 9 servicios y luego el gateway (detalle en `The_Quiet_Chapter-backend/README.md`).
+3. **Frontend**:
+   ```bash
+   cd The_Quiet_Chapter-frontend
+   npm install
+   npm run dev      # http://localhost:5173
+   ```
 
-### Acceso administrativo
+Cuenta de administrador de prueba: `admin@thequietchapter.cl` / `Admin#2026!`
 
-El área administrativa no forma parte de la navegación pública principal. El acceso se produce mediante el flujo de autenticación y el rol correspondiente.
-
-### Checkout
-
-El proceso de compra está dividido visualmente en etapas para que el usuario pueda reconocer en qué punto del proceso se encuentra:
-
-**Dirección → Envío → Pago → Confirmación**
-
-Los datos necesarios para continuar entre determinadas etapas se trasladan mediante parámetros de navegación, permitiendo representar el recorrido completo dentro del prototipo.
-
----
-
-## Estructura del proyecto
-
-```text
-FullStack_II_Proyecto_Semestral/
-│
-├── Documentos/
-│   └── Plantilla_Gestion_Requerimientos_Scrum.xlsx
-│
-├── The_Quiet_Chapter/
-│   ├── Index.html
-│   ├── css/
-│   │   └── styles.css
-│   ├── js/
-│   │   └── script.js
-│   ├── img/
-│   │   └── Portadas de libros
-│   └── pages/
-│       ├── Catálogo
-│       ├── Detalle de libro
-│       ├── Carrito
-│       ├── Checkout
-│       ├── Cuenta de cliente
-│       └── Administración
-│
-└── README.md
-```
-
----
-
-## Alcance actual
-
-Esta versión corresponde al **prototipo visual e medianamente interactivo** del proyecto.
-
-Las validaciones de campos de texto forman parte de la interacción funcional disponible en esta etapa. El resto de los recorridos busca representar visualmente cómo funcionaría la experiencia final de la librería.
-
----
-
-## Áreas del prototipo
-
-| Área | Estado en el prototipo |
-|---|---|
-| Inicio | Disponible |
-| Catálogo | Disponible |
-| Detalle de libro | Disponible |
-| Ofertas | Disponible |
-| Favoritos | Disponible |
-| Carrito | Disponible |
-| Registro | Disponible |
-| Inicio de sesión | Disponible |
-| Perfil | Disponible |
-| Direcciones | Disponible |
-| Pedidos | Disponible |
-| Checkout | Disponible |
-| Confirmación | Disponible |
-| Administración | Disponible |
-| Reportes | Disponible |
-
----
-
-## Nombre
-
-> **The Quiet Chapter**
-
-<div align="center">
-
-**FullStack II · 2026**
-
-</div>
+> Los secretos JWT y la clave interna incluidos en `application.properties` son **valores de desarrollo**
+> para uso académico local; en un entorno real se definen por variables de entorno.

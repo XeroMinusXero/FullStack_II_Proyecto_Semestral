@@ -1,0 +1,6 @@
+package com.thequietchapter.model;
+
+public enum TipoAvisoCarrito {
+    PRECIO_CAMBIADO, PRODUCTO_AGOTADO, STOCK_INSUFICIENTE,
+    CANTIDAD_AJUSTADA, PRODUCTO_INACTIVO, CARRITO_INACTIVO
+}

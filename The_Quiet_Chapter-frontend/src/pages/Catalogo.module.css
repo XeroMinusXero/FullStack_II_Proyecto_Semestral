@@ -1,0 +1,38 @@
+.buscador { background: none; border: 0; box-shadow: none; padding: 0; max-width: none; margin-bottom: 8px; }
+.sugerencias { position: absolute; top: 100%; left: 0; right: 0; z-index: 20; list-style: none; margin: 4px 0 0; padding: 6px;
+  background: var(--blanco); border: 1px solid var(--beige); border-radius: var(--radio-sm); box-shadow: var(--sombra-md); }
+.sugerencias button { width: 100%; text-align: left; background: none; border: 0; padding: 8px 10px; border-radius: var(--radio-xs); }
+.sugerencias button:hover { background: var(--crema-hueso); }
+
+/* Precio: minimo – maximo + aplicar en una sola linea */
+.precio { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
+.rango { display: flex; align-items: center; gap: 6px; }
+.rango input { width: 110px; }
+.rango .btn, .rango button { min-height: 46px; padding: 0 16px; }
+
+/* Filtros aplicados como chips removibles */
+.activos { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -10px 0 22px; }
+.chipActivo {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 6px 5px 13px; border-radius: var(--radio-pill);
+  background: var(--cafe-oscuro); color: var(--crema); font-size: .82rem; font-weight: 600;
+}
+.chipActivo button {
+  width: 22px; height: 22px; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: rgba(250, 246, 240, .16); color: var(--crema); font-size: 1rem; line-height: 1;
+}
+.chipActivo button:hover { background: var(--dorado); color: var(--cafe-noche); }
+.limpiar { background: none; border: 0; color: var(--terracota); font-weight: 700; font-size: .84rem; text-decoration: underline; text-underline-offset: 3px; padding: 4px 6px; }
+
+@media (max-width: 560px) {
+  .rango input { width: 100%; min-width: 0; }
+}
+
+/* Cabecera de resultados: total a la izquierda, orden a la derecha */
+.cabeceraResultados { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(184, 115, 51, .18); }
+.orden { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; font-size: .88rem; color: var(--cafe-oscuro); }
+.orden select { min-height: 40px; padding: 6px 12px; border-radius: var(--radio-sm); border: 1.5px solid var(--beige); background: var(--blanco); font-weight: 500; }
+@media (max-width: 560px) {
+  .rango input { flex: 1 1 0; width: auto; }
+  .rango .btn, .rango button { flex: 0 0 auto; padding: 0 12px; }
+}

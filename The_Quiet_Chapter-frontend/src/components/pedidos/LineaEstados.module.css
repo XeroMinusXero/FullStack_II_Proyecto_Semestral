@@ -1,0 +1,7 @@
+.linea { display: flex; list-style: none; padding: 0; margin: 18px 0; gap: 0; }
+.linea li { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; font-size: .85rem; color: var(--cafe-tibio); text-align: center; }
+.linea li:not(:first-child)::before { content: ''; position: absolute; top: 15px; right: 50%; width: 100%; height: 3px; background: var(--beige); z-index: 0; }
+.linea li.hecho:not(:first-child)::before { background: var(--cobre); }
+.punto { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--beige); color: var(--cafe-oscuro); font-weight: 700; position: relative; z-index: 1; }
+.hecho { color: var(--cafe-oscuro); font-weight: 600; }
+.hecho .punto { background: var(--cobre); color: var(--blanco); }

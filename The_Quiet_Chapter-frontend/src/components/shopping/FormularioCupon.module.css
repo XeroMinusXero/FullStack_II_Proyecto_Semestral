@@ -1,0 +1,6 @@
+.formulario { background: none; padding: 0; border: 0; box-shadow: none; max-width: 520px; margin: 16px 0; }
+.etiqueta { font-weight: bold; }
+.fila { display: flex; gap: 8px; margin-top: 6px; }
+.input { flex: 1; padding: 9px; border: 1px solid var(--beige-oscuro); border-radius: var(--radio-sm); }
+.aplicado { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 16px 0; padding: 12px 16px;
+  background: var(--exito-suave); border-left: 4px solid var(--exito); border-radius: var(--radio-sm); }

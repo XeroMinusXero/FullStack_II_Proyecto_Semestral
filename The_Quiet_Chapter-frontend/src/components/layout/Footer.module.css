@@ -1,0 +1,8 @@
+.boletin { background: none; border: 0; box-shadow: none; padding: 0; max-width: none;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin: 14px auto !important; }
+.ok, .error { text-align: center; }
+.etiqueta { color: var(--crema); font-size: .85rem; }
+.input { padding: 8px 12px; border-radius: var(--radio-pill); border: 1px solid rgba(201, 162, 39, .4);
+  background: rgba(255, 255, 255, .08); color: var(--crema); min-width: 200px; }
+.ok { color: #b9d99a; width: 100%; }
+.error { color: #f0a3a3; width: 100%; }
