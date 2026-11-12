@@ -7,8 +7,8 @@ import { Campo } from '../components/comunes/Campo'
 import { Alerta } from '../components/comunes/Alerta'
 import { MENSAJES, reglas, type Errores } from '../utils/validaciones'
 
-interface Formulario { nombre: string; apellido: string; email: string; telefono: string; contrasena: string; confirmar: string; terminos: boolean }
-const VACIO: Formulario = { nombre: '', apellido: '', email: '', telefono: '', contrasena: '', confirmar: '', terminos: false }
+interface Formulario { nombre: string; apellido: string; email: string; telefono: string; contrasena: string; confirmar: string;}
+const VACIO: Formulario = { nombre: '', apellido: '', email: '', telefono: '', contrasena: '', confirmar: ''}
 
 /** registro.html -> HU-032/033: registro de cliente con las mismas validaciones del sitio original. */
 export default function Registro() {
@@ -34,7 +34,6 @@ export default function Registro() {
     else if (!reglas.telefono(f.telefono)) e.telefono = MENSAJES.telefono
     if (!reglas.passwordFuerte(f.contrasena)) e.contrasena = MENSAJES.passwordFuerte
     if (f.confirmar !== f.contrasena) e.confirmar = 'Las contraseñas no coinciden'
-    if (!f.terminos) e.terminos = 'Debes aceptar los términos y condiciones'
     return e
   }
 
@@ -74,13 +73,6 @@ export default function Registro() {
         <Campo id="telefono" etiqueta="Teléfono" type="tel" autoComplete="tel" placeholder="+56 9 1234 5678" {...campo('telefono')} />
         <Campo id="contrasena" etiqueta="Contraseña" type="password" autoComplete="new-password" ayuda="Mínimo 8 caracteres y un carácter especial" {...campo('contrasena')} />
         <Campo id="confirmar" etiqueta="Confirmar contraseña" type="password" autoComplete="new-password" {...campo('confirmar')} />
-        <div className={`campo${errores.terminos ? ' error' : ''}`}>
-          <div className="form-check">
-            <input className="form-check-input" type="checkbox" id="terminos" checked={f.terminos} onChange={(e) => setF({ ...f, terminos: e.target.checked })} />
-            <label className="form-check-label" htmlFor="terminos">Acepto los términos y condiciones</label>
-          </div>
-          <span className="mensaje-error">{errores.terminos}</span>
-        </div>
         <button className="btn w-100" type="submit" disabled={enviando}>{enviando ? 'Creando cuenta...' : 'Registrarme'}</button>
         <p className="text-center mt-3 mb-0">¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></p>
       </form>
