@@ -27,7 +27,7 @@ export default function Autor() {
       <MigasDePan niveles={[{ texto: 'Inicio', a: '/' }, { texto: 'Catálogo', a: '/catalogo' }, { texto: autor.nombre }]} />
       <section className="seccion">
         <h1>{autor.nombre}</h1>
-        <p style={{ whiteSpace: 'pre-line' }}>{autor.biografia || 'Biografía no disponible.'}</p>
+        <p className="texto-preformado">{autor.biografia || 'Biografía no disponible.'}</p>
       </section>
       <h2>Libros de {autor.nombre}</h2>
       <GrillaLibros libros={libros.map((l) => ({ ...l, autores: l.autores.join(', ') }))} vacio="Este autor no tiene libros disponibles." />

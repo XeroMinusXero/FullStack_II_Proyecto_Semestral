@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { catalogoApi } from '../../api/catalogo'
 import { ErrorApi, mensajeDe } from '../../api/http'
 import { MenuAdmin } from '../../components/layout/MenuAdmin'
-import { Alerta } from '../../components/comunes/Alerta'
+import { Avisos } from '../../components/comunes/Avisos'
 import { Cargando } from '../../components/comunes/Cargando'
 import { Paginacion } from '../../components/comunes/Paginacion'
 import { Modal } from '../../components/comunes/Modal'
@@ -11,10 +11,18 @@ import { Confirmar } from '../../components/comunes/Confirmar'
 import { Portada } from '../../components/shopping/Portada'
 import { FormularioLibro } from '../../components/admin/FormularioLibro'
 import { GestionStock } from '../../components/admin/GestionStock'
+import { EditorPrecio } from '../../components/admin/EditorPrecio'
+import { EditorBiografia } from '../../components/admin/EditorBiografia'
+import { InterruptorEstado } from '../../components/admin/InterruptorEstado'
+import { useAccion } from '../../hooks/useAccion'
+import estilos from './Catalogo.module.css'
 import { clp } from '../../utils/formato'
-import type { Autor, Clasificacion, LibroDetalle, LibroResumen, LibroSolicitud, PaginaLibros } from '../../interfaces/catalogo'
+import type { LibroDetalle, LibroResumen, LibroSolicitud, PaginaLibros } from '../../interfaces/catalogo'
 
 type Estado = 'TODOS' | 'ACTIVOS' | 'INACTIVOS'
+
+/** Color del stock: agotado (rojo), 5 o menos (alerta) o normal. */
+const claseStock = (stock: number) => (stock === 0 ? 'badge-agotado' : stock <= 5 ? 'badge-oferta' : 'badge-disponible')
 
 /** adminCatalogo.html -> HU-046..054: mantenedor de libros, precios, estado, stock y biografias de autores. */
 export default function AdminCatalogo() {
@@ -25,22 +33,19 @@ export default function AdminCatalogo() {
   const [agotados, setAgotados] = useState(params.get('agotados') === '1')
   const [pagina, setPagina] = useState(0)
   const [datos, setDatos] = useState<PaginaLibros | null>(null)
-  const [error, setError] = useState('')
-  const [exito, setExito] = useState('')
   const [formulario, setFormulario] = useState<{ libro?: LibroDetalle } | null>(null)
   const [errCampos, setErrCampos] = useState<Record<string, string>>({})
   const [stock, setStock] = useState<LibroResumen | null>(null)
   const [eliminar, setEliminar] = useState<LibroResumen | null>(null)
-  const [precio, setPrecio] = useState<{ libro: LibroResumen; valor: string } | null>(null)
-  const [autores, setAutores] = useState<Clasificacion[]>([])
-  const [autor, setAutor] = useState<Autor | null>(null)
+  const [precio, setPrecio] = useState<LibroResumen | null>(null)
+  const accion = useAccion()
+  const { setError, setExito } = accion
 
   const cargar = useCallback(() => {
     catalogoApi.mantenedor({ texto: busqueda || undefined, estado, agotados: agotados || undefined, pagina, tamanio: 15 })
       .then(setDatos).catch((e) => setError(mensajeDe(e)))
-  }, [busqueda, estado, agotados, pagina])
+  }, [busqueda, estado, agotados, pagina, setError])
   useEffect(() => { cargar() }, [cargar])
-  useEffect(() => { catalogoApi.autores().then(setAutores).catch(() => undefined) }, [])
 
   // ?editar=ID abre el formulario directamente (enlace desde la ficha del libro).
   useEffect(() => {
@@ -48,15 +53,10 @@ export default function AdminCatalogo() {
     if (!id) return
     catalogoApi.detalle(Number(id)).then((libro) => setFormulario({ libro })).catch((e) => setError(mensajeDe(e)))
     setParams({}, { replace: true })
-  }, [params, setParams])
-
-  const accion = async (fn: () => Promise<unknown>, ok: string) => {
-    setError(''); setExito('')
-    try { await fn(); setExito(ok); cargar() } catch (e) { setError(mensajeDe(e)) }
-  }
+  }, [params, setParams, setError])
 
   const guardarLibro = async (s: LibroSolicitud) => {
-    setErrCampos({})
+    setErrCampos({}); setError('')
     try {
       if (formulario?.libro) await catalogoApi.editar(formulario.libro.id, s)
       else await catalogoApi.crear(s)
@@ -69,6 +69,13 @@ export default function AdminCatalogo() {
     }
   }
 
+  const guardarPrecio = async (nuevo: number) => {
+    const libro = precio!
+    const ok = await accion.ejecutar(() => catalogoApi.precio(libro.id, nuevo), 'Precio actualizado. Los carritos con este libro verán el aviso de cambio.', cargar)
+    if (ok) setPrecio(null)
+    return ok
+  }
+
   const editar = async (id: number) => {
     setError('')
     try { setFormulario({ libro: await catalogoApi.detalle(id) }) } catch (e) { setError(mensajeDe(e)) }
@@ -78,16 +85,15 @@ export default function AdminCatalogo() {
     <>
       <h1>Catálogo e inventario</h1>
       <MenuAdmin />
-      <Alerta tipo="exito" onCerrar={() => setExito('')}>{exito}</Alerta>
-      <Alerta tipo="error" onCerrar={() => setError('')}>{error}</Alerta>
+      <Avisos estado={accion} />
 
       <div className="d-flex flex-wrap gap-2 align-items-end mb-3">
-        <form className="barra-busqueda mb-0" style={{ flex: 1, minWidth: 260, background: 'none', boxShadow: 'none', padding: 0, border: 0, maxWidth: 'none' }}
+        <form className={`barra-busqueda form-plano ${estilos.buscador}`}
           onSubmit={(e) => { e.preventDefault(); setPagina(0); setBusqueda(texto.trim()) }}>
           <input type="search" placeholder="Buscar por título, autor o ISBN" value={texto} onChange={(e) => setTexto(e.target.value)} aria-label="Buscar" />
           <button className="btn" type="submit">Buscar</button>
         </form>
-        <select className="form-select" style={{ maxWidth: 160 }} value={estado} aria-label="Estado" onChange={(e) => { setEstado(e.target.value as Estado); setPagina(0) }}>
+        <select className="form-select selector-corto" value={estado} aria-label="Estado" onChange={(e) => { setEstado(e.target.value as Estado); setPagina(0) }}>
           <option value="TODOS">Todos</option><option value="ACTIVOS">Activos</option><option value="INACTIVOS">Inactivos</option>
         </select>
         <div className="form-check mb-2">
@@ -112,15 +118,12 @@ export default function AdminCatalogo() {
                     <td>{l.isbn}</td>
                     <td>
                       {clp(l.precio)}{' '}
-                      <button type="button" className="btn btn-secundario py-0 px-2" title="Cambiar precio" onClick={() => setPrecio({ libro: l, valor: String(l.precio) })}>✎</button>
+                      <button type="button" className="btn btn-secundario py-0 px-2" title="Cambiar precio" aria-label={`Cambiar precio de ${l.titulo}`} onClick={() => setPrecio(l)}>✎</button>
                     </td>
-                    <td><span className={`badge ${l.stock === 0 ? 'badge-agotado' : l.stock <= 5 ? 'badge-oferta' : 'badge-disponible'}`}>{l.stock}</span></td>
+                    <td><span className={`badge ${claseStock(l.stock)}`}>{l.stock}</span></td>
                     <td>
-                      <div className="form-check form-switch">
-                        <input className="form-check-input" type="checkbox" role="switch" id={`act${l.id}`} checked={l.activo}
-                          onChange={() => accion(() => catalogoApi.estado(l.id, !l.activo), l.activo ? 'Libro desactivado: ya no aparece en el catálogo' : 'Libro activado')} />
-                        <label className="form-check-label" htmlFor={`act${l.id}`}>{l.activo ? 'Activo' : 'Inactivo'}</label>
-                      </div>
+                      <InterruptorEstado id={`libro-${l.id}`} activo={l.activo}
+                        onCambiar={() => accion.ejecutar(() => catalogoApi.estado(l.id, !l.activo), l.activo ? 'Libro desactivado: ya no aparece en el catálogo' : 'Libro activado', cargar)} />
                     </td>
                     <td>
                       <div className="d-flex flex-wrap gap-1">
@@ -138,22 +141,7 @@ export default function AdminCatalogo() {
         </>
       )}
 
-      <section className="seccion mt-4">
-        <h2>Biografías de autores</h2>
-        <div className="d-flex gap-2 flex-wrap">
-          <select className="form-select" style={{ maxWidth: 320 }} aria-label="Autor" value={autor?.id ?? ''}
-            onChange={(e) => e.target.value ? catalogoApi.autor(Number(e.target.value)).then(setAutor).catch((er) => setError(mensajeDe(er))) : setAutor(null)}>
-            <option value="">Selecciona un autor</option>
-            {autores.map((a) => <option key={a.id} value={a.id}>{a.nombre}</option>)}
-          </select>
-        </div>
-        {autor && (
-          <div className="mt-3">
-            <textarea className="form-control" rows={5} maxLength={5000} value={autor.biografia ?? ''} onChange={(e) => setAutor({ ...autor, biografia: e.target.value })} aria-label="Biografía" />
-            <button type="button" className="btn mt-2" onClick={() => accion(() => catalogoApi.biografia(autor.id, autor.biografia ?? ''), 'Biografía actualizada')}>Guardar biografía</button>
-          </div>
-        )}
-      </section>
+      <EditorBiografia accion={accion} />
 
       <Modal abierto={!!formulario} titulo={formulario?.libro ? `Editar: ${formulario.libro.titulo}` : 'Registrar libro'} onCerrar={() => setFormulario(null)} ancho="xl">
         {formulario && <FormularioLibro key={formulario.libro?.id ?? 'nuevo'} libro={formulario.libro} errorServidor={errCampos} onGuardar={guardarLibro} onCancelar={() => setFormulario(null)} />}
@@ -163,18 +151,13 @@ export default function AdminCatalogo() {
         {stock && <GestionStock libro={stock} onCambio={cargar} />}
       </Modal>
 
-      <Modal abierto={!!precio} titulo={`Precio: ${precio?.libro.titulo ?? ''}`} onCerrar={() => setPrecio(null)}
-        pie={<button className="btn" disabled={!precio || !(Number(precio.valor) > 0)} onClick={() => {
-          const p = precio!; setPrecio(null)
-          accion(() => catalogoApi.precio(p.libro.id, Number(p.valor)), 'Precio actualizado. Los carritos con este libro verán el aviso de cambio.')
-        }}>Guardar precio</button>}>
-        <label htmlFor="nuevoPrecio" className="form-label">Nuevo precio (CLP, IVA incluido)</label>
-        <input id="nuevoPrecio" type="number" min={1} className="form-control" value={precio?.valor ?? ''} onChange={(e) => precio && setPrecio({ ...precio, valor: e.target.value })} />
+      <Modal abierto={!!precio} titulo={`Precio: ${precio?.titulo ?? ''}`} onCerrar={() => setPrecio(null)}>
+        {precio && <EditorPrecio key={precio.id} precioActual={precio.precio} onGuardar={guardarPrecio} />}
       </Modal>
 
       <Confirmar abierto={!!eliminar} titulo="Eliminar libro" textoConfirmar="Eliminar"
         mensaje={`¿Eliminar «${eliminar?.titulo}»? Si tiene ventas registradas, el sistema lo impedirá: en ese caso desactívalo.`}
-        onCancelar={() => setEliminar(null)} onConfirmar={() => { const l = eliminar!; setEliminar(null); accion(() => catalogoApi.eliminar(l.id), 'Libro eliminado') }} />
+        onCancelar={() => setEliminar(null)} onConfirmar={() => { const l = eliminar!; setEliminar(null); accion.ejecutar(() => catalogoApi.eliminar(l.id), 'Libro eliminado', cargar) }} />
     </>
   )
 }

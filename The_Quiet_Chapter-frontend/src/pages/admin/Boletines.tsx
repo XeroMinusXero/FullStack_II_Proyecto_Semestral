@@ -2,7 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { notifApi } from '../../api/notif'
 import { mensajeDe } from '../../api/http'
 import { MenuAdmin } from '../../components/layout/MenuAdmin'
-import { Alerta } from '../../components/comunes/Alerta'
+import { Avisos } from '../../components/comunes/Avisos'
+import { EditorBoletin } from '../../components/admin/EditorBoletin'
+import { useAccion } from '../../hooks/useAccion'
+import type { DatosBoletin } from '../../utils/validaciones'
 import { Cargando } from '../../components/comunes/Cargando'
 import { Paginacion } from '../../components/comunes/Paginacion'
 import { Modal } from '../../components/comunes/Modal'
@@ -18,10 +21,10 @@ export default function AdminBoletines() {
   const [estadoSus, setEstadoSus] = useState('CONFIRMADA')
   const [paginaSus, setPaginaSus] = useState(0)
   const [suscriptores, setSuscriptores] = useState<Pagina<Suscriptor> | null>(null)
-  const [form, setForm] = useState<{ id?: number; asunto: string; contenido: string } | null>(null)
+  const [editor, setEditor] = useState<{ id?: number; inicial: DatosBoletin } | null>(null)
   const [enviar, setEnviar] = useState<Boletin | null>(null)
-  const [error, setError] = useState('')
-  const [exito, setExito] = useState('')
+  const accion = useAccion()
+  const { setError } = accion
 
   const [resumen, setResumen] = useState<{ enviados: number; borradores: number; confirmados: number; pendientes: number } | null>(null)
 
@@ -32,29 +35,23 @@ export default function AdminBoletines() {
       notifApi.suscriptores('CONFIRMADA'), notifApi.suscriptores('PENDIENTE'),
     ]).then(([e, b, c, p]) => setResumen({ enviados: e.totalElementos, borradores: b.totalElementos, confirmados: c.totalElementos, pendientes: p.totalElementos }))
       .catch(() => undefined)
-  }, [pagina])
+  }, [pagina, setError])
   useEffect(() => { cargar() }, [cargar])
-  useEffect(() => { notifApi.suscriptores(estadoSus || undefined, paginaSus).then(setSuscriptores).catch((e) => setError(mensajeDe(e))) }, [estadoSus, paginaSus])
+  useEffect(() => { notifApi.suscriptores(estadoSus || undefined, paginaSus).then(setSuscriptores).catch((e) => setError(mensajeDe(e))) }, [estadoSus, paginaSus, setError])
 
-  const accion = async (fn: () => Promise<unknown>, ok: string) => {
-    setError(''); setExito('')
-    try { await fn(); setExito(ok); cargar(); return true } catch (e) { setError(mensajeDe(e)); return false }
-  }
-
-  const guardar = async () => {
-    if (!form) return
-    if (form.asunto.trim().length < 3 || form.contenido.trim().length < 10) { setError('Asunto (mín. 3) y contenido (mín. 10 caracteres) son obligatorios'); return }
-    const ok = await accion(() => (form.id ? notifApi.editarBoletin(form.id, form.asunto.trim(), form.contenido.trim()) : notifApi.crearBoletin(form.asunto.trim(), form.contenido.trim())),
-      form.id ? 'Borrador actualizado' : 'Borrador creado')
-    if (ok) setForm(null)
+  const guardar = async (b: DatosBoletin) => {
+    const id = editor?.id
+    const ok = await accion.ejecutar(() => (id ? notifApi.editarBoletin(id, b.asunto, b.contenido) : notifApi.crearBoletin(b.asunto, b.contenido)),
+      id ? 'Borrador actualizado' : 'Borrador creado', cargar)
+    if (ok) setEditor(null)
+    return ok
   }
 
   return (
     <>
       <h1>Boletines</h1>
       <MenuAdmin />
-      <Alerta tipo="exito" onCerrar={() => setExito('')}>{exito}</Alerta>
-      <Alerta tipo="error" onCerrar={() => setError('')}>{error}</Alerta>
+      <Avisos estado={accion} />
       <div className="mini-kpis">
         <div className="mini-kpi"><div className="numero">{resumen?.confirmados ?? '…'}</div><div className="rotulo">Suscriptores confirmados</div></div>
         <div className="mini-kpi"><div className="numero">{resumen?.pendientes ?? '…'}</div><div className="rotulo">Por confirmar</div></div>
@@ -66,7 +63,7 @@ export default function AdminBoletines() {
           <section className="panel-caja">
           <div className="cabecera">
             <h2>Boletines</h2>
-            <button type="button" className="btn" onClick={() => setForm({ asunto: '', contenido: '' })}>+ Nuevo boletín</button>
+            <button type="button" className="btn" onClick={() => setEditor({ inicial: { asunto: '', contenido: '' } })}>+ Nuevo boletín</button>
           </div>
           {!boletines ? <Cargando /> : (
             <>
@@ -83,7 +80,7 @@ export default function AdminBoletines() {
                         <td>{b.estado === 'ENVIADO' ? b.cantidadDestinatarios : '—'}</td>
                         <td className="d-flex gap-1">
                           {b.estado === 'BORRADOR' && <>
-                            <button type="button" className="btn btn-secundario" onClick={() => setForm({ id: b.id, asunto: b.asunto, contenido: b.contenido })}>Editar</button>
+                            <button type="button" className="btn btn-secundario" onClick={() => setEditor({ id: b.id, inicial: { asunto: b.asunto, contenido: b.contenido } })}>Editar</button>
                             <button type="button" className="btn" onClick={() => setEnviar(b)}>Enviar</button>
                           </>}
                         </td>
@@ -101,7 +98,7 @@ export default function AdminBoletines() {
           <section className="panel-caja">
           <div className="cabecera">
             <h2>Suscriptores</h2>
-            <select className="form-select" style={{ maxWidth: 170 }} aria-label="Estado" value={estadoSus} onChange={(e) => { setEstadoSus(e.target.value); setPaginaSus(0) }}>
+            <select className="form-select selector-corto" aria-label="Estado" value={estadoSus} onChange={(e) => { setEstadoSus(e.target.value); setPaginaSus(0) }}>
               <option value="">Todos</option><option value="CONFIRMADA">Confirmados</option><option value="PENDIENTE">Pendientes</option><option value="CANCELADA">Cancelados</option>
             </select>
           </div>
@@ -126,21 +123,12 @@ export default function AdminBoletines() {
         </div>
       </div>
 
-      <Modal abierto={!!form} titulo={form?.id ? 'Editar boletín' : 'Nuevo boletín'} onCerrar={() => setForm(null)} ancho="lg"
-        pie={<button type="button" className="btn" onClick={guardar}>Guardar borrador</button>}>
-        {form && (
-          <>
-            <label htmlFor="asunto" className="form-label">Asunto</label>
-            <input id="asunto" className="form-control mb-3" maxLength={200} value={form.asunto} onChange={(e) => setForm({ ...form, asunto: e.target.value })} />
-            <label htmlFor="contenido" className="form-label">Contenido</label>
-            <textarea id="contenido" className="form-control" rows={10} value={form.contenido} onChange={(e) => setForm({ ...form, contenido: e.target.value })} />
-            <small className="text-muted">Cada correo incluye automáticamente el enlace para cancelar la suscripción.</small>
-          </>
-        )}
+      <Modal abierto={!!editor} titulo={editor?.id ? 'Editar boletín' : 'Nuevo boletín'} onCerrar={() => setEditor(null)} ancho="lg">
+        {editor && <EditorBoletin key={editor.id ?? 'nuevo'} inicial={editor.inicial} onGuardar={guardar} />}
       </Modal>
       <Confirmar abierto={!!enviar} titulo="Enviar boletín" peligro={false} textoConfirmar="Enviar ahora"
         mensaje={`Se enviará «${enviar?.asunto}» a todos los suscriptores confirmados. Una vez enviado no se puede editar.`}
-        onCancelar={() => setEnviar(null)} onConfirmar={() => { const b = enviar!; setEnviar(null); accion(() => notifApi.enviarBoletin(b.id), 'Boletín enviado') }} />
+        onCancelar={() => setEnviar(null)} onConfirmar={() => { const b = enviar!; setEnviar(null); accion.ejecutar(() => notifApi.enviarBoletin(b.id), 'Boletín enviado', cargar) }} />
     </>
   )
 }

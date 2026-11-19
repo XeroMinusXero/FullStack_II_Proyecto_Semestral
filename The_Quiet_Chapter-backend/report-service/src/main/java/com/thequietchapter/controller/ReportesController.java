@@ -1,5 +1,6 @@
 package com.thequietchapter.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import com.thequietchapter.model.*;
 import com.thequietchapter.security.Autenticacion;
 import com.thequietchapter.service.ReportesService;
@@ -39,6 +40,7 @@ public class ReportesController {
      * HU-140..142: KPIs + evolucion + pedidos por estado en una sola llamada para
      * el dashboard.
      */
+    @Operation(summary = "[Admin] Panel de indicadores", description = "Período rápido (?periodo=HOY|SEMANA|MES|ANIO) o rango (?desde=&hasta=).", tags = "Reportes")
     @GetMapping("/panel")
     public Map<String, Object> panel(@RequestHeader(value = AUTH, required = false) String a,
             @RequestParam(required = false) String periodo,
@@ -61,6 +63,7 @@ public class ReportesController {
     }
 
     /** HU-141, 143, 144. */
+    @Operation(summary = "[Admin] Reporte de ventas", tags = "Reportes")
     @GetMapping("/ventas")
     public Map<String, Object> ventas(@RequestHeader(value = AUTH, required = false) String a,
             @RequestParam(required = false) String periodo,
@@ -81,6 +84,7 @@ public class ReportesController {
     }
 
     /** HU-145..147. */
+    @Operation(summary = "[Admin] Libros más y menos vendidos", tags = "Reportes")
     @GetMapping("/libros")
     public Map<String, Object> libros(@RequestHeader(value = AUTH, required = false) String a,
             @RequestParam(required = false) String periodo,
@@ -95,6 +99,7 @@ public class ReportesController {
     }
 
     /** HU-148..150. */
+    @Operation(summary = "[Admin] Reporte de inventario (rotación y valorización)", tags = "Reportes")
     @GetMapping("/inventario")
     public Map<String, Object> inventario(@RequestHeader(value = AUTH, required = false) String a,
             @RequestParam(required = false) String periodo,
@@ -121,6 +126,7 @@ public class ReportesController {
     }
 
     /** HU-151..153. */
+    @Operation(summary = "[Admin] Reporte de clientes", tags = "Reportes")
     @GetMapping("/clientes")
     public Map<String, Object> clientes(@RequestHeader(value = AUTH, required = false) String a,
             @RequestParam(required = false) String periodo,
@@ -135,6 +141,7 @@ public class ReportesController {
     }
 
     /** HU-154..157: ventas | libros-mas-vendidos | inventario | clientes. */
+    @Operation(summary = "[Admin] Exportar un reporte a CSV", description = "tipo: ventas | libros-mas-vendidos | inventario | clientes", tags = "Reportes")
     @GetMapping("/{tipo}/csv")
     public ResponseEntity<byte[]> csv(@RequestHeader(value = AUTH, required = false) String a,
             @PathVariable String tipo,

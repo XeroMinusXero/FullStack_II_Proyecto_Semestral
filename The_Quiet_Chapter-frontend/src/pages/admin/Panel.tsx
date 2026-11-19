@@ -40,7 +40,7 @@ export default function Panel() {
           <Link key={t.titulo} to={t.a} className="kpi-card text-decoration-none">
             <div className="etiqueta">{t.titulo}</div>
             <div className="valor">{t.valor}</div>
-            <small style={{ position: "relative", opacity: .8 }}>{t.detalle}</small>
+            <small className="kpi-detalle">{t.detalle}</small>
           </Link>
         ))}
       </div>

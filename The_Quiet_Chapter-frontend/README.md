@@ -26,16 +26,36 @@ Otros comandos: `npm run build` (tsc + build de producción), `npm run lint` (ES
 src/
   api/            Un módulo por microservicio (catalogo, carrito, checkout, pedidos, usuarios,
                   social, promo, notif, reportes) + http.ts (fetch, JWT, errores)
-  interfaces/     Tipos TypeScript que reflejan los DTO del backend (carrito.ts: interfaces del carrito)
+  interfaces/     Tipos TypeScript que reflejan los DTO del backend
   context/        Sesión (auth), carrito y favoritos globales (contexto + Provider separados)
+  hooks/          useAccion (mensajes de éxito/error de una operación) y useFormulario (valores + errores)
   components/
+    comunes/      Piezas genéricas: Campo/CampoSeleccion/CampoTextoLargo, Avisos, Alerta, Modal, Confirmar,
+                  Pestanas, OpcionesRadio, TablaDatos, TarjetaKpi, Paginación, Estrellas, Gráfico de barras
+    cuenta/       Formularios de Mi cuenta (datos personales, correo, contraseña, campos de dirección)
     shopping/     Tarjeta de libro, grilla, precio, portada, botón agregar, ítem y resumen del carrito, cupón
-    comunes/      Alerta, Campo, Modal, Confirmar, Paginación, Estrellas, Migas de pan, Gráfico de barras
+    social/       Sección de reseñas, tarjeta de reseña y formulario de texto (reseña / reporte)
+    pedidos/      Línea de estados y resumen de importes (checkout, confirmación y detalle)
+    admin/        Editores del administrador: libro, precio, stock, biografía, cupón, promoción,
+                  método de envío, medio de pago, boletín, gestión de pedido y moderación
     layout/       Header, Footer (boletín), Layout, menús de cuenta y admin, RutaProtegida
-    social/       Sección de reseñas      pedidos/  Línea de estados      admin/  Formulario de libro, stock
-  pages/          Una página por cada .html original (+ las HU que no tenían página)
-  utils/          Formato CLP/fechas, validaciones (mismos mensajes del sitio HTML), regiones
+  pages/          Una página por cada .html original (+ las HU que no tenían página); solo componen
+  utils/
+    validaciones/ Reglas y límites del backend por dominio (cuenta, catalogo, promo, social, admin)
+    formato.ts    CLP, fechas y etiquetas · direccion.ts · fechas.ts · navegacion.ts · regiones
+  styles/         tema.css (diseño del sitio HTML) + ajustes.css (correcciones y utilidades)
 ```
+
+### Cómo está armado un formulario
+
+1. **Validación** en `utils/validaciones/<dominio>.ts`: una función pura que recibe los datos y devuelve
+   `{ campo: 'mensaje' }` (objeto vacío = válido). Los límites (`LIMITES`) copian los `@Size` del backend.
+2. **Estado** con `useFormulario(inicial)`: `form.campo('email')` entrega `value`, `error` y `onChange`
+   listos para `<Campo>`; `form.validar(validarRegistro)` marca los errores y devuelve si se puede enviar.
+3. **Envío** con `useAccion()`: `accion.ejecutar(() => api.algo(), 'Mensaje OK', recargar)` limpia los avisos,
+   llama al backend y muestra el éxito o el error en `<Avisos estado={accion} />`.
+
+El frontend valida para dar una buena experiencia; **el backend vuelve a validar todo** (DTO con `@Valid`).
 
 ## Páginas HTML → rutas React
 

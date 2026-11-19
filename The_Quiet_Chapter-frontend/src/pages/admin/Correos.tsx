@@ -30,10 +30,10 @@ export default function AdminCorreos() {
       <h1>Correos enviados</h1>
       <MenuAdmin />
       <Alerta tipo="error" onCerrar={() => setError('')}>{error}</Alerta>
-      <form className="filtros ancho" onSubmit={filtrar} style={{ maxWidth: 'none' }}>
+      <form className="filtros ancho" onSubmit={filtrar}>
         <div className="campo"><label htmlFor="tipo">Tipo</label><input id="tipo" placeholder="ej. PEDIDO_CONFIRMADO" value={filtro.tipo} onChange={(e) => setFiltro({ ...filtro, tipo: e.target.value })} /></div>
         <div className="campo"><label htmlFor="dest">Destinatario</label><input id="dest" placeholder="correo o parte de él" value={filtro.destinatario} onChange={(e) => setFiltro({ ...filtro, destinatario: e.target.value })} /></div>
-        <div className="campo" style={{ justifyContent: 'flex-end' }}><button className="btn" type="submit">Filtrar</button></div>
+        <div className="campo justify-content-end"><button className="btn" type="submit">Filtrar</button></div>
       </form>
       {!datos ? <Cargando /> : (
         <>
@@ -43,7 +43,7 @@ export default function AdminCorreos() {
               <tbody>
                 {datos.contenido.length === 0 && <tr><td colSpan={5}>Sin correos.</td></tr>}
                 {datos.contenido.map((n) => (
-                  <tr key={n.id} onClick={() => setAbierta(n)} style={{ cursor: 'pointer' }}>
+                  <tr key={n.id} onClick={() => setAbierta(n)} className="fila-clicable">
                     <td>{fecha(n.fechaCreacion, true)}</td><td>{n.destinatario}</td><td><small>{n.tipo}</small></td>
                     <td><button type="button" className="btn btn-link p-0 text-start">{n.asunto}</button></td>
                     <td><span className={`badge ${claseEstado(n.estado)}`}>{n.estado.toLowerCase()}</span></td>
@@ -59,7 +59,7 @@ export default function AdminCorreos() {
         {abierta && (
           <>
             <p className="text-muted mb-2">Para: {abierta.destinatario} · {fecha(abierta.fechaCreacion, true)}</p>
-            <p style={{ whiteSpace: 'pre-line' }}>{abierta.mensaje}</p>
+            <p className="texto-preformado">{abierta.mensaje}</p>
             {abierta.enlaceAccion && <p className="mb-0"><small>Enlace: <code>{abierta.enlaceAccion}</code></small></p>}
           </>
         )}

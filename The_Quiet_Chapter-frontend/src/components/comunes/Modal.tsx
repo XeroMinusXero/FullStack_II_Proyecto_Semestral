@@ -28,7 +28,7 @@ export function Modal({ abierto, titulo, onCerrar, children, pie, ancho = 'lg' }
         <div className={`modal-dialog modal-${ancho} modal-dialog-scrollable modal-dialog-centered`} onClick={(e) => e.stopPropagation()}>
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" style={{ fontFamily: "'Playfair Display', serif" }}>{titulo}</h5>
+              <h5 className="modal-title">{titulo}</h5>
               <button type="button" className="btn-close" aria-label="Cerrar" onClick={onCerrar} />
             </div>
             <div className="modal-body">{children}</div>

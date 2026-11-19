@@ -7,7 +7,7 @@ export function Precio({ precio, promo, grande = false }: { precio: number; prom
   if (!promo) return <div className={clase}>{clp(precio)}</div>
   return (
     <div>
-      <span style={{ textDecoration: 'line-through', color: '#999' }}>{clp(promo.precioOriginal)}</span>{' '}
+      <span className="precio-tachado">{clp(promo.precioOriginal)}</span>{' '}
       <span className="badge badge-oferta">-{promo.porcentaje}%</span>
       <div className={clase}>{clp(promo.precioFinal)}</div>
     </div>

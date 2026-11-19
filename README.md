@@ -11,7 +11,7 @@ React (Vite, 5173) ──/api──► API Gateway (8090) ──► 9 microservi
 
 | Carpeta | Contenido |
 |---|---|
-| `The_Quiet_Chapter-backend/` | API Gateway + 9 microservicios Spring Boot 4.1.1 (Java 17), scripts SQL y colección Postman en `docs/` |
+| `The_Quiet_Chapter-backend/` | API Gateway + 9 microservicios Spring Boot 4.1.1 (Java 17), documentación Swagger, scripts SQL y colección Postman en `docs/` |
 | `The_Quiet_Chapter-frontend/` | Vite + React 19 + TypeScript, Bootstrap 5, React Router |
 | `Documentos/` | Diagramas UML y plantilla de requerimientos (HU) |
 
@@ -43,6 +43,13 @@ protegidas con una clave interna; el gateway no las expone hacia afuera.
    npm install
    npm run dev      # http://localhost:5173
    ```
+
+## Documentación de la API (Swagger)
+
+Con el backend levantado: **`http://localhost:8090/swagger-ui.html`** muestra la documentación OpenAPI de los
+9 microservicios en un selector, y permite probar cada endpoint a través del gateway. Para las rutas protegidas,
+inicia sesión con `POST /api/usuarios/login` y pega el `accessToken` en **Authorize**.
+Detalle en `The_Quiet_Chapter-backend/README.md`.
 
 Cuenta de administrador de prueba: `admin@thequietchapter.cl` / `Admin#2026!`
 

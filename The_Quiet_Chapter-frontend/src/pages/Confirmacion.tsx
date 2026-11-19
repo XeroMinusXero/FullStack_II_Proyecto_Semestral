@@ -6,6 +6,7 @@ import { Cargando } from '../components/comunes/Cargando'
 import { Alerta } from '../components/comunes/Alerta'
 import { clp, fecha } from '../utils/formato'
 import type { Pedido } from '../interfaces/pedido'
+import { ResumenImportes } from '../components/pedidos/ResumenImportes'
 
 /** confirmacion.html -> HU-029: numero de pedido, detalle y aviso de correo enviado. */
 export default function Confirmacion() {
@@ -28,7 +29,7 @@ export default function Confirmacion() {
       <Alerta tipo="error">{error}</Alerta>
       {!pedido && !error && <Cargando />}
       {pedido && (
-        <div className="seccion" style={{ maxWidth: 760, margin: '0 auto' }}>
+        <div className="seccion seccion-centrada">
           <h2>Detalle del pedido</h2>
           <p className="mb-1"><strong>Fecha:</strong> {fecha(pedido.fechaCreacion, true)}</p>
           <p className="mb-1"><strong>Entrega:</strong> {pedido.entrega.direccionFormateada} · {pedido.entrega.metodoEnvio} ({pedido.entrega.plazoEstimadoDias} días hábiles)</p>
@@ -39,12 +40,7 @@ export default function Confirmacion() {
               <tbody>{pedido.detalles.map((d) => <tr key={d.id}><td>{d.tituloLibro}</td><td>{d.cantidad}</td><td>{clp(d.subtotal)}</td></tr>)}</tbody>
             </table>
           </div>
-          <div className="resumen-caja mt-3">
-            <div className="fila"><span>Subtotal</span><span>{clp(pedido.importes.subtotal)}</span></div>
-            {pedido.importes.descuento > 0 && <div className="fila"><span>Descuentos</span><span>−{clp(pedido.importes.descuento)}</span></div>}
-            <div className="fila"><span>Envío</span><span>{clp(pedido.importes.costoEnvio)}</span></div>
-            <div className="fila"><span>Total</span><span>{clp(pedido.importes.total)}</span></div>
-          </div>
+          <ResumenImportes importes={pedido.importes} className="mt-3" />
           <div className="d-flex flex-wrap gap-2 mt-3">
             <Link to={`/cuenta/pedidos/${pedido.id}`} className="btn">Ver seguimiento</Link>
             <Link to="/catalogo" className="btn btn-secundario">Seguir comprando</Link>

@@ -1,5 +1,6 @@
 package com.thequietchapter.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import com.thequietchapter.client.PedidosHttpClient;
 import com.thequietchapter.dto.*;
 import com.thequietchapter.model.CriteriosCatalogo;
@@ -38,6 +39,7 @@ public class CatalogoController {
      * Catalogo publico: texto (titulo/autor/ISBN), filtros, orden y paginacion.
      * Solo libros activos.
      */
+    @Operation(summary = "[Público] Catálogo paginado con búsqueda, filtros y orden", tags = "Catálogo")
     @GetMapping
     public PaginaLibros catalogo(@RequestParam(required = false) String texto,
             @RequestParam(required = false) List<Long> categorias,
@@ -57,6 +59,7 @@ public class CatalogoController {
      * Mantenedor (HU admin): incluye inactivos, filtro por estado
      * (ACTIVOS/INACTIVOS/TODOS) y agotados.
      */
+    @Operation(summary = "[Admin] Mantenedor de libros (incluye inactivos y agotados)", tags = "Mantenedor de libros")
     @GetMapping("/admin")
     public PaginaLibros mantenedor(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @RequestParam(required = false) String texto,
@@ -76,6 +79,7 @@ public class CatalogoController {
         return PaginaLibros.desde(service.buscar(texto, c, orden, pagina, tamanio));
     }
 
+    @Operation(summary = "[Público] Sugerencias de búsqueda (autocompletado)", tags = "Catálogo")
     @GetMapping("/sugerencias")
     public List<LibroResumen> sugerir(@RequestParam String texto, @RequestParam(defaultValue = "5") int limite) {
         return service.sugerir(texto, limite);
@@ -85,36 +89,43 @@ public class CatalogoController {
      * Estado vigente (precio/stock/activo) de varios libros en un request. Usado
      * por cart-service.
      */
+    @Operation(summary = "[Público] Precio, stock y estado vigentes de varios libros", description = "Lo usan el carrito y los favoritos para mostrar disponibilidad actual.", tags = "Catálogo")
     @GetMapping("/condiciones")
     public List<CondicionLibroRespuesta> condiciones(@RequestParam List<Long> ids) {
         return service.condiciones(ids);
     }
 
+    @Operation(summary = "[Público] Listar categorías", tags = "Catálogo")
     @GetMapping("/categorias")
     public List<ClasificacionRespuesta> categorias() {
         return service.listarCategorias();
     }
 
+    @Operation(summary = "[Público] Listar géneros", tags = "Catálogo")
     @GetMapping("/generos")
     public List<ClasificacionRespuesta> generos() {
         return service.listarGeneros();
     }
 
+    @Operation(summary = "[Público] Listar autores", tags = "Catálogo")
     @GetMapping("/autores")
     public List<ClasificacionRespuesta> autores() {
         return service.listarAutores();
     }
 
+    @Operation(summary = "[Público] Listar editoriales", tags = "Catálogo")
     @GetMapping("/editoriales")
     public List<ClasificacionRespuesta> editoriales() {
         return service.listarEditoriales();
     }
 
+    @Operation(summary = "[Público] Ficha y biografía de un autor", tags = "Catálogo")
     @GetMapping("/autores/{id}")
     public AutorRespuesta autor(@PathVariable Long id) {
         return service.autor(id);
     }
 
+    @Operation(summary = "[Admin] Editar la biografía de un autor", tags = "Mantenedor de libros")
     @PutMapping("/autores/{id}/biografia")
     public AutorRespuesta biografia(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @Valid @RequestBody BiografiaSolicitud s) {
@@ -125,6 +136,7 @@ public class CatalogoController {
     /**
      * Publico ve solo activos; un administrador autenticado tambien ve inactivos.
      */
+    @Operation(summary = "[Público] Ficha completa de un libro", tags = "Catálogo")
     @GetMapping("/{id}")
     public LibroDetalle detalle(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id) {
@@ -132,6 +144,7 @@ public class CatalogoController {
         return service.detalle(id, admin);
     }
 
+    @Operation(summary = "[Admin] Registrar un libro", description = "Categoría, géneros, autores y editorial se reutilizan si ya existen (sin distinguir mayúsculas) o se crean.", tags = "Mantenedor de libros")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LibroDetalle crear(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
@@ -140,6 +153,7 @@ public class CatalogoController {
         return service.registrar(s);
     }
 
+    @Operation(summary = "[Admin] Editar un libro", tags = "Mantenedor de libros")
     @PutMapping("/{id}")
     public LibroDetalle editar(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @Valid @RequestBody LibroSolicitud s) {
@@ -147,6 +161,7 @@ public class CatalogoController {
         return service.actualizar(id, s);
     }
 
+    @Operation(summary = "[Admin] Eliminar un libro", description = "Se rechaza si el libro tiene ventas registradas; en ese caso se desactiva.", tags = "Mantenedor de libros")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id) {
@@ -155,6 +170,7 @@ public class CatalogoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "[Admin] Cambiar el precio de un libro", tags = "Mantenedor de libros")
     @PatchMapping("/{id}/precio")
     public LibroDetalle precio(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @Valid @RequestBody PrecioSolicitud s) {
@@ -162,6 +178,7 @@ public class CatalogoController {
         return service.actualizarPrecio(id, s.precio());
     }
 
+    @Operation(summary = "[Admin] Activar o desactivar un libro", tags = "Mantenedor de libros")
     @PatchMapping("/{id}/estado")
     public LibroDetalle estado(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @RequestBody EstadoSolicitud s) {
@@ -169,6 +186,7 @@ public class CatalogoController {
         return service.cambiarEstado(id, s.activo());
     }
 
+    @Operation(summary = "[Admin] Fijar el stock de un libro", tags = "Inventario")
     @PutMapping("/{id}/stock")
     public MovimientoStockRespuesta actualizarStock(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
@@ -177,6 +195,7 @@ public class CatalogoController {
         return service.actualizarStock(id, s.nuevoStock(), admin.usuarioId());
     }
 
+    @Operation(summary = "[Admin] Ajuste de stock con motivo", tags = "Inventario")
     @PostMapping("/{id}/stock/ajustes")
     public MovimientoStockRespuesta ajuste(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @Valid @RequestBody AjusteStockSolicitud s) {
@@ -184,6 +203,7 @@ public class CatalogoController {
         return service.ajustarStock(id, s.nuevoStock(), s.motivo(), admin.usuarioId());
     }
 
+    @Operation(summary = "[Admin] Ingreso de unidades al inventario", tags = "Inventario")
     @PostMapping("/{id}/stock/ingresos")
     public MovimientoStockRespuesta ingreso(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
@@ -192,6 +212,7 @@ public class CatalogoController {
         return service.registrarIngreso(id, s.cantidad(), admin.usuarioId());
     }
 
+    @Operation(summary = "[Admin] Historial de movimientos de stock", tags = "Inventario")
     @GetMapping("/{id}/stock/movimientos")
     public List<MovimientoStockRespuesta> movimientos(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,

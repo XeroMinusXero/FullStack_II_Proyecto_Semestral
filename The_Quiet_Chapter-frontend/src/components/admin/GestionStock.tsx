@@ -1,54 +1,82 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { catalogoApi } from '../../api/catalogo'
 import { mensajeDe } from '../../api/http'
-import { Alerta } from '../comunes/Alerta'
+import { useAccion } from '../../hooks/useAccion'
+import { Avisos } from '../comunes/Avisos'
 import { fecha } from '../../utils/formato'
+import { validarAjusteStock, validarIngresoStock, type DatosAjusteStock, type Errores } from '../../utils/validaciones'
 import type { LibroResumen, MovimientoStock } from '../../interfaces/catalogo'
+import estilos from './GestionStock.module.css'
 
 /** HU-050/051/052: ingreso de unidades, ajuste con motivo e historial de movimientos. */
 export function GestionStock({ libro, onCambio }: { libro: LibroResumen; onCambio: () => void }) {
+  const accion = useAccion()
+  const { setError } = accion
   const [movs, setMovs] = useState<MovimientoStock[] | null>(null)
-  const [ingreso, setIngreso] = useState('')
-  const [nuevo, setNuevo] = useState(String(libro.stock))
-  const [motivo, setMotivo] = useState('')
-  const [error, setError] = useState('')
-  const [exito, setExito] = useState('')
   const [stock, setStock] = useState(libro.stock)
+  const [ingreso, setIngreso] = useState('')
+  const [errorIngreso, setErrorIngreso] = useState<string>()
+  const [ajuste, setAjuste] = useState<DatosAjusteStock>({ nuevoStock: String(libro.stock), motivo: '' })
+  const [erroresAjuste, setErroresAjuste] = useState<Errores<DatosAjusteStock>>({})
 
-  const cargar = () => catalogoApi.movimientos(libro.id).then(setMovs).catch((e) => setError(mensajeDe(e)))
-  useEffect(() => { cargar() }, [libro.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  const cargar = useCallback(() => catalogoApi.movimientos(libro.id).then(setMovs).catch((e) => setError(mensajeDe(e))), [libro.id, setError])
+  useEffect(() => { cargar() }, [cargar])
 
-  const ejecutar = async (fn: () => Promise<MovimientoStock>, ok: string) => {
-    setError(''); setExito('')
-    try { const m = await fn(); setStock(m.stockPosterior); setNuevo(String(m.stockPosterior)); setExito(ok); await cargar(); onCambio() } catch (e) { setError(mensajeDe(e)) }
+  /** Ambas operaciones devuelven el movimiento creado: con el actualizamos el stock mostrado. */
+  const registrar = (operacion: () => Promise<MovimientoStock>, mensajeOk: string) =>
+    accion.ejecutar(async () => {
+      const m = await operacion()
+      setStock(m.stockPosterior)
+      setAjuste((a) => ({ ...a, nuevoStock: String(m.stockPosterior) }))
+    }, mensajeOk, () => { onCambio(); return cargar() })
+
+  const ingresar = async () => {
+    const invalido = validarIngresoStock(ingreso)
+    setErrorIngreso(invalido)
+    if (invalido) return
+    if (await registrar(() => catalogoApi.ingreso(libro.id, Number(ingreso)), `Ingresadas ${ingreso} unidades`)) setIngreso('')
   }
+
+  const ajustar = async () => {
+    const errores = validarAjusteStock(ajuste)
+    setErroresAjuste(errores)
+    if (Object.keys(errores).length) return
+    if (await registrar(() => catalogoApi.ajuste(libro.id, Number(ajuste.nuevoStock), ajuste.motivo.trim()), 'Stock ajustado')) {
+      setAjuste((a) => ({ ...a, motivo: '' }))
+    }
+  }
+
+  const errorAjuste = erroresAjuste.nuevoStock ?? erroresAjuste.motivo
 
   return (
     <>
       <p>Stock actual: <strong>{stock}</strong> unidades</p>
-      <Alerta tipo="error">{error}</Alerta>
-      <Alerta tipo="exito">{exito}</Alerta>
+      <Avisos estado={accion} />
       <div className="row g-3 mb-3">
-        <div className="col-md-5">
-          <label className="form-label" htmlFor="ingreso">Ingreso de unidades</label>
+        <div className={`col-md-5 campo${errorIngreso ? ' error' : ''}`}>
+          <label htmlFor="ingreso">Ingreso de unidades</label>
           <div className="d-flex gap-2">
-            <input id="ingreso" type="number" min={1} className="form-control" value={ingreso} onChange={(e) => setIngreso(e.target.value)} />
-            <button type="button" className="btn" disabled={!(Number(ingreso) > 0)}
-              onClick={() => ejecutar(() => catalogoApi.ingreso(libro.id, Number(ingreso)), `Ingresadas ${ingreso} unidades`).then(() => setIngreso(''))}>Ingresar</button>
+            <input id="ingreso" type="number" min={1} value={ingreso} aria-invalid={!!errorIngreso}
+              onChange={(e) => { setIngreso(e.target.value); setErrorIngreso(undefined) }} />
+            <button type="button" className="btn" onClick={ingresar}>Ingresar</button>
           </div>
+          <span className="mensaje-error">{errorIngreso}</span>
         </div>
-        <div className="col-md-7">
-          <label className="form-label" htmlFor="ajuste">Ajuste manual (nuevo stock y motivo)</label>
+        <div className={`col-md-7 campo${errorAjuste ? ' error' : ''}`}>
+          <label htmlFor="ajuste">Ajuste manual (nuevo stock y motivo)</label>
           <div className="d-flex gap-2 flex-wrap">
-            <input id="ajuste" type="number" min={0} className="form-control" style={{ maxWidth: 110 }} value={nuevo} onChange={(e) => setNuevo(e.target.value)} />
-            <input aria-label="Motivo del ajuste" className="form-control" style={{ flex: 1, minWidth: 150 }} placeholder="Motivo (ej. merma, conteo)" value={motivo} onChange={(e) => setMotivo(e.target.value)} />
-            <button type="button" className="btn btn-secundario" disabled={!(Number(nuevo) >= 0) || motivo.trim().length < 3}
-              onClick={() => ejecutar(() => catalogoApi.ajuste(libro.id, Number(nuevo), motivo.trim()), 'Stock ajustado').then(() => setMotivo(''))}>Ajustar</button>
+            <input id="ajuste" type="number" min={0} className={estilos.cantidad} value={ajuste.nuevoStock} aria-invalid={!!erroresAjuste.nuevoStock}
+              onChange={(e) => { setAjuste({ ...ajuste, nuevoStock: e.target.value }); setErroresAjuste({}) }} />
+            <input aria-label="Motivo del ajuste" className={estilos.motivo} placeholder="Motivo (ej. merma, conteo)" maxLength={400}
+              value={ajuste.motivo} aria-invalid={!!erroresAjuste.motivo}
+              onChange={(e) => { setAjuste({ ...ajuste, motivo: e.target.value }); setErroresAjuste({}) }} />
+            <button type="button" className="btn btn-secundario" onClick={ajustar}>Ajustar</button>
           </div>
+          <span className="mensaje-error">{errorAjuste}</span>
         </div>
       </div>
       <h3>Movimientos</h3>
-      <div className="tabla-scroll" style={{ maxHeight: 300 }}>
+      <div className={`tabla-scroll ${estilos.historial}`}>
         <table>
           <thead><tr><th>Fecha</th><th>Tipo</th><th>Variación</th><th>Stock</th><th>Motivo</th></tr></thead>
           <tbody>
@@ -56,7 +84,7 @@ export function GestionStock({ libro, onCambio }: { libro: LibroResumen; onCambi
             {movs?.map((m) => (
               <tr key={m.id}>
                 <td>{fecha(m.fecha, true)}</td><td>{m.tipo}</td>
-                <td style={{ color: m.variacion < 0 ? 'var(--error)' : 'var(--exito)' }}>{m.variacion > 0 ? `+${m.variacion}` : m.variacion}</td>
+                <td className={m.variacion < 0 ? 'variacion-negativa' : 'variacion-positiva'}>{m.variacion > 0 ? `+${m.variacion}` : m.variacion}</td>
                 <td>{m.stockAnterior} → {m.stockPosterior}</td><td>{m.motivo ?? '—'}</td>
               </tr>
             ))}

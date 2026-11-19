@@ -1,0 +1,9 @@
+.grupo { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.opcion {
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  padding: 14px 16px; border-radius: var(--radio-sm);
+  border: 1.5px solid var(--beige); background: var(--blanco);
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.opcion:hover { border-color: var(--cobre); }
+.elegida { composes: opcion; border-color: var(--cobre); background: #fff8ee; box-shadow: 0 0 0 3px rgba(184, 115, 51, .12); }

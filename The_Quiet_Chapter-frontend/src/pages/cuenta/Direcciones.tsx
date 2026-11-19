@@ -1,58 +1,45 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { usuariosApi } from '../../api/usuarios'
-import { mensajeDe } from '../../api/http'
+import { useAccion } from '../../hooks/useAccion'
+import { useFormulario } from '../../hooks/useFormulario'
 import { MenuCuenta } from '../../components/layout/MenuCuenta'
-import { Campo } from '../../components/comunes/Campo'
-import { Alerta } from '../../components/comunes/Alerta'
+import { Avisos } from '../../components/comunes/Avisos'
 import { Cargando } from '../../components/comunes/Cargando'
 import { Confirmar } from '../../components/comunes/Confirmar'
-import { REGIONES } from '../../utils/regiones'
-import { validarDireccion, type Errores } from '../../utils/validaciones'
-import type { Direccion, DireccionSolicitud } from '../../interfaces/usuario'
-
-const VACIA: DireccionSolicitud = { calle: '', numero: '', comuna: '', region: '' }
+import { CamposDireccion } from '../../components/cuenta/CamposDireccion'
+import { DIRECCION_VACIA, camposDe, limpiarDireccion } from '../../utils/direccion'
+import { validarDireccion } from '../../utils/validaciones'
+import type { Direccion } from '../../interfaces/usuario'
 
 /** misDirecciones.html -> HU-044: CRUD de direcciones y predeterminada. */
 export default function Direcciones() {
   const [lista, setLista] = useState<Direccion[] | null>(null)
-  const [form, setForm] = useState<DireccionSolicitud>(VACIA)
   const [editando, setEditando] = useState<number | null>(null)
-  const [errores, setErrores] = useState<Errores<DireccionSolicitud>>({})
-  const [error, setError] = useState('')
-  const [exito, setExito] = useState('')
   const [eliminar, setEliminar] = useState<Direccion | null>(null)
+  const form = useFormulario(DIRECCION_VACIA)
+  const accion = useAccion()
+  const { setError } = accion
 
-  const cargar = () => usuariosApi.direcciones().then(setLista).catch((e) => setError(mensajeDe(e)))
-  useEffect(() => { cargar() }, [])
+  const cargar = useCallback(() => usuariosApi.direcciones().then(setLista).catch(() => setError('No se pudieron cargar tus direcciones')), [setError])
+  useEffect(() => { cargar() }, [cargar])
 
-  const accion = async (fn: () => Promise<unknown>, ok: string) => {
-    setError(''); setExito('')
-    try { await fn(); setExito(ok); await cargar() } catch (e) { setError(mensajeDe(e)) }
-  }
+  const cancelarEdicion = () => { setEditando(null); form.reiniciar() }
 
-  const guardar = (e: FormEvent) => {
+  const guardar = async (e: FormEvent) => {
     e.preventDefault()
-    const err = validarDireccion(form)
-    setErrores(err)
-    if (Object.keys(err).length) return
-    const datos = { calle: form.calle.trim(), numero: form.numero.trim(), comuna: form.comuna.trim(), region: form.region }
-    accion(async () => {
-      if (editando) await usuariosApi.editarDireccion(editando, datos)
-      else await usuariosApi.agregarDireccion(datos)
-      setForm(VACIA); setEditando(null)
-    }, editando ? 'Dirección actualizada' : 'Dirección agregada')
+    if (!form.validar(validarDireccion)) return
+    const datos = limpiarDireccion(form.valores)
+    const ok = await accion.ejecutar(
+      () => (editando ? usuariosApi.editarDireccion(editando, datos) : usuariosApi.agregarDireccion(datos)),
+      editando ? 'Dirección actualizada' : 'Dirección agregada', cargar)
+    if (ok) cancelarEdicion()
   }
-
-  const campo = (k: keyof DireccionSolicitud) => ({
-    value: form[k], error: errores[k], onChange: (e: { target: { value: string } }) => setForm({ ...form, [k]: e.target.value }),
-  })
 
   return (
     <>
       <h1>Mi cuenta</h1>
       <MenuCuenta />
-      <Alerta tipo="exito" onCerrar={() => setExito('')}>{exito}</Alerta>
-      <Alerta tipo="error" onCerrar={() => setError('')}>{error}</Alerta>
+      <Avisos estado={accion} />
       <div className="row g-4">
         <div className="col-lg-7">
           <h2>Mis direcciones</h2>
@@ -64,8 +51,11 @@ export default function Direcciones() {
                   {d.predeterminada && <div><span className="badge badge-disponible mt-1">Predeterminada</span></div>}
                 </div>
                 <div className="d-flex flex-wrap gap-2 align-items-start">
-                  {!d.predeterminada && <button type="button" className="btn btn-secundario" onClick={() => accion(() => usuariosApi.predeterminada(d.id), 'Dirección predeterminada actualizada')}>Predeterminar</button>}
-                  <button type="button" className="btn btn-secundario" onClick={() => { setEditando(d.id); setForm({ calle: d.calle, numero: d.numero, comuna: d.comuna, region: d.region }); setErrores({}) }}>Editar</button>
+                  {!d.predeterminada && (
+                    <button type="button" className="btn btn-secundario"
+                      onClick={() => accion.ejecutar(() => usuariosApi.predeterminada(d.id), 'Dirección predeterminada actualizada', cargar)}>Predeterminar</button>
+                  )}
+                  <button type="button" className="btn btn-secundario" onClick={() => { setEditando(d.id); form.reiniciar(camposDe(d)) }}>Editar</button>
                   <button type="button" className="btn btn-peligro" onClick={() => setEliminar(d)}>Eliminar</button>
                 </div>
               </div>
@@ -75,26 +65,17 @@ export default function Direcciones() {
         <div className="col-lg-5">
           <form onSubmit={guardar} noValidate className="ancho">
             <h2>{editando ? 'Editar dirección' : 'Nueva dirección'}</h2>
-            <Campo id="calle" etiqueta="Calle" maxLength={120} {...campo('calle')} />
-            <Campo id="numero" etiqueta="Número / Depto" maxLength={30} {...campo('numero')} />
-            <Campo id="comuna" etiqueta="Comuna" maxLength={80} {...campo('comuna')} />
-            <div className={`campo${errores.region ? ' error' : ''}`}>
-              <label htmlFor="region">Región</label>
-              <select id="region" value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}>
-                <option value="">Seleccione una región</option>
-                {REGIONES.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
-              <span className="mensaje-error">{errores.region}</span>
-            </div>
+            <CamposDireccion form={form} />
             <div className="d-flex gap-2">
               <button className="btn" type="submit">{editando ? 'Guardar cambios' : 'Agregar dirección'}</button>
-              {editando && <button type="button" className="btn btn-secundario" onClick={() => { setEditando(null); setForm(VACIA); setErrores({}) }}>Cancelar</button>}
+              {editando && <button type="button" className="btn btn-secundario" onClick={cancelarEdicion}>Cancelar</button>}
             </div>
           </form>
         </div>
       </div>
       <Confirmar abierto={!!eliminar} titulo="Eliminar dirección" mensaje="¿Seguro que deseas eliminar esta dirección?" textoConfirmar="Eliminar"
-        onCancelar={() => setEliminar(null)} onConfirmar={() => { const d = eliminar!; setEliminar(null); accion(() => usuariosApi.eliminarDireccion(d.id), 'Dirección eliminada') }} />
+        onCancelar={() => setEliminar(null)}
+        onConfirmar={() => { const d = eliminar!; setEliminar(null); accion.ejecutar(() => usuariosApi.eliminarDireccion(d.id), 'Dirección eliminada', cargar) }} />
     </>
   )
 }

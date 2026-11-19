@@ -7,6 +7,7 @@ import { Cargando } from '../../components/comunes/Cargando'
 import { PasosCheckout } from './PasosCheckout'
 import { borrarCheckoutId, useProcesoCompra } from './proceso'
 import { clp } from '../../utils/formato'
+import { ResumenImportes } from '../../components/pedidos/ResumenImportes'
 
 /**
  * checkoutResumen.html -> HU-026/027/028: resumen final y pago. checkout-service orquesta stock, pedido,
@@ -68,13 +69,7 @@ export default function CheckoutResumen() {
             </div>
           </div>
           <div className="col-lg-5">
-            <div className="resumen-caja">
-              <div className="fila"><span>Subtotal</span><span>{clp(r.subtotal)}</span></div>
-              {r.descuento > 0 && <div className="fila"><span>Descuentos</span><span>−{clp(r.descuento)}</span></div>}
-              <div className="fila"><span>Envío</span><span>{r.costoEnvio > 0 ? clp(r.costoEnvio) : 'Gratis'}</span></div>
-              <div className="fila"><span>Total</span><span>{clp(r.total)}</span></div>
-              <small className="text-muted">Incluye IVA (19%): {clp(r.ivaIncluido)}</small>
-            </div>
+            <ResumenImportes importes={r} />
             <div className="form-check mt-3">
               <input className="form-check-input" type="checkbox" id="simular" checked={simularRechazo} onChange={(e) => setSimularRechazo(e.target.checked)} />
               <label className="form-check-label" htmlFor="simular"><small>Simular pago rechazado (pruebas)</small></label>

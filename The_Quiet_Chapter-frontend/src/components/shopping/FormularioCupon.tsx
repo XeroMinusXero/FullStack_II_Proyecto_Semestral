@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useCarrito } from '../../context/carrito'
 import { mensajeDe } from '../../api/http'
+import { validarCodigoCupon } from '../../utils/validaciones'
 import estilos from './FormularioCupon.module.css'
 
 /** HU-100/101: aplicar y quitar cupon (validado por promo-service). */
@@ -12,7 +13,8 @@ export function FormularioCupon({ codigoAplicado }: { codigoAplicado: string | n
 
   const aplicar = async (e: FormEvent) => {
     e.preventDefault()
-    if (codigo.trim().length < 3) { setError('Ingresa un código de al menos 3 caracteres'); return }
+    const invalido = validarCodigoCupon(codigo)
+    if (invalido) { setError(invalido); return }
     setOcupado(true); setError('')
     try { await aplicarCupon(codigo.trim()); setCodigo('') } catch (err) { setError(mensajeDe(err)) } finally { setOcupado(false) }
   }
@@ -30,7 +32,7 @@ export function FormularioCupon({ codigoAplicado }: { codigoAplicado: string | n
     <form className={estilos.formulario} onSubmit={aplicar} noValidate>
       <label htmlFor="cupon" className={estilos.etiqueta}>Cupón de descuento</label>
       <div className={estilos.fila}>
-        <input id="cupon" value={codigo} onChange={(e) => setCodigo(e.target.value.toUpperCase())} placeholder="Ingrese código" className={estilos.input} />
+        <input id="cupon" value={codigo} onChange={(e) => setCodigo(e.target.value.toUpperCase())} placeholder="Ingrese código" maxLength={40} aria-invalid={!!error} className={estilos.input} />
         <button className="btn" type="submit" disabled={ocupado}>Aplicar</button>
       </div>
       {error && <small className="text-danger" role="alert">{error}</small>}

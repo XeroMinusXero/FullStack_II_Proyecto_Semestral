@@ -8,7 +8,7 @@ export function Estrellas({ valor, onElegir, tamano = '1.1rem' }: { valor: numbe
     <span role="radiogroup" aria-label="Calificación" className="estrellas" style={{ fontSize: tamano }}>
       {[1, 2, 3, 4, 5].map((n) => (
         <button key={n} type="button" role="radio" aria-checked={n === v} aria-label={`${n} estrellas`}
-          onClick={() => onElegir(n)} style={{ background: 'none', border: 0, padding: '0 2px', color: 'inherit', cursor: 'pointer', fontSize: 'inherit' }}>
+          onClick={() => onElegir(n)} className="estrella-boton">
           {n <= v ? '★' : '☆'}
         </button>
       ))}

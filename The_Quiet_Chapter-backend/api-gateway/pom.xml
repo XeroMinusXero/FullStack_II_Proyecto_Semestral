@@ -15,6 +15,7 @@
   <description>API Gateway (Spring Cloud Gateway Server WebMVC) - The Quiet Chapter</description>
   <properties>
     <java.version>17</java.version>
+    <springdoc.version>3.2.0</springdoc.version>
     <!-- Spring Cloud 2025.1.2 (Oakwood) declara compatibilidad con Spring Boot 4.1.x -->
     <spring-cloud.version>2025.1.2</spring-cloud.version>
   </properties>
@@ -27,6 +28,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!-- Swagger UI centralizado: muestra la documentacion de los 9 servicios (springdoc 3.x = Spring Boot 4.x) -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${springdoc.version}</version>
     </dependency>
   </dependencies>
   <dependencyManagement>

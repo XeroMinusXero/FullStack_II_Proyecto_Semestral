@@ -6,6 +6,8 @@ import { Cargando } from '../../components/comunes/Cargando'
 import { PasosCheckout } from './PasosCheckout'
 import { useProcesoCompra } from './proceso'
 import { clp } from '../../utils/formato'
+import { OpcionesRadio } from '../../components/comunes/OpcionesRadio'
+import estilos from './Checkout.module.css'
 import type { MetodoEnvio } from '../../interfaces/checkout'
 
 /** checkoutEnvio.html -> HU-024: metodos de envio habilitados para la region elegida. */
@@ -40,18 +42,17 @@ export default function CheckoutEnvio() {
       <PasosCheckout actual={2} procesoId={proceso?.id} />
       <Alerta tipo="error">{error}</Alerta>
       {proceso && (
-        <div className="seccion" style={{ maxWidth: 640 }}>
+        <div className={`seccion ${estilos.paso}`}>
           <h2>Método de envío</h2>
           <p className="text-muted">Enviar a: {proceso.direccion?.formateada}</p>
-          {metodos === null ? <Cargando /> : metodos.length === 0 ? <p>No hay métodos de envío disponibles para tu región.</p> : metodos.map((m) => (
-            <div className="form-check mb-2" key={m.id}>
-              <input className="form-check-input" type="radio" name="envio" id={`env${m.id}`} checked={elegido === m.id} onChange={() => setElegido(m.id)} />
-              <label className="form-check-label" htmlFor={`env${m.id}`}>
-                <strong>{m.nombre}</strong> — {m.costoBase > 0 ? clp(m.costoBase) : 'Gratis'} · {m.plazoEstimadoDias} {m.plazoEstimadoDias === 1 ? 'día hábil' : 'días hábiles'}
-              </label>
-            </div>
-          ))}
-          <div className="d-flex justify-content-between gap-2 mt-3">
+          {metodos === null ? <Cargando /> : metodos.length === 0 ? <p>No hay métodos de envío disponibles para tu región.</p> : (
+            <OpcionesRadio nombre="envio" etiqueta="Método de envío" valor={elegido} onCambiar={setElegido}
+              opciones={metodos.map((m) => ({
+                valor: m.id,
+                contenido: <><strong>{m.nombre}</strong> — {m.costoBase > 0 ? clp(m.costoBase) : 'Gratis'} · {m.plazoEstimadoDias} {m.plazoEstimadoDias === 1 ? 'día hábil' : 'días hábiles'}</>,
+              }))} />
+          )}
+          <div className={estilos.acciones}>
             <button type="button" className="btn btn-secundario" onClick={() => navegar('/checkout/direccion')}>Volver</button>
             <button type="button" className="btn" disabled={!elegido || enviando} onClick={continuar}>{enviando ? 'Guardando...' : 'Continuar'}</button>
           </div>

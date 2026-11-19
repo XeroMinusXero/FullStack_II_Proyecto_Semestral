@@ -15,7 +15,7 @@ export function Header() {
 
   return (
     <header>
-      <Link to="/" className="logo" style={{ color: 'var(--crema)' }}>✒️ The Quiet Chapter</Link>
+      <Link to="/" className="logo">✒️ The Quiet Chapter</Link>
       <nav aria-label="Principal">
         <NavLink to="/" end>Inicio</NavLink>
         <NavLink to="/catalogo">Catálogo</NavLink>
@@ -33,7 +33,7 @@ export function Header() {
           </>
         )}
         {usuario && esAdmin && (
-          <NavLink to="/admin" style={{ color: 'var(--dorado)', fontWeight: 700 }}>⚙ Panel Admin</NavLink>
+          <NavLink to="/admin" className="enlace-admin">⚙ Panel Admin</NavLink>
         )}
         {usuario && !esAdmin && <NavLink to="/cuenta/perfil">👤 {usuario.nombre}</NavLink>}
         {usuario && (

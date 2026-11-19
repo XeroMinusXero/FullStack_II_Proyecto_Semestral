@@ -4,9 +4,11 @@ import { pedidosApi } from '../../api/pedidos'
 import { mensajeDe } from '../../api/http'
 import { MenuCuenta } from '../../components/layout/MenuCuenta'
 import { Cargando } from '../../components/comunes/Cargando'
-import { Alerta } from '../../components/comunes/Alerta'
+import { Avisos } from '../../components/comunes/Avisos'
 import { Confirmar } from '../../components/comunes/Confirmar'
 import { LineaEstados } from '../../components/pedidos/LineaEstados'
+import { useAccion } from '../../hooks/useAccion'
+import { ResumenImportes } from '../../components/pedidos/ResumenImportes'
 import { ETIQUETA_ESTADO_PEDIDO, claseEstado, clp, fecha } from '../../utils/formato'
 import type { Pedido } from '../../interfaces/pedido'
 
@@ -14,15 +16,15 @@ import type { Pedido } from '../../interfaces/pedido'
 export default function DetallePedido() {
   const id = Number(useParams().id)
   const [pedido, setPedido] = useState<Pedido | null>(null)
-  const [error, setError] = useState('')
-  const [exito, setExito] = useState('')
+  const accion = useAccion()
+  const { error, setError } = accion
   const [confirmar, setConfirmar] = useState(false)
 
-  useEffect(() => { pedidosApi.miPedido(id).then(setPedido).catch((e) => setError(mensajeDe(e))) }, [id])
+  useEffect(() => { pedidosApi.miPedido(id).then(setPedido).catch((e) => setError(mensajeDe(e))) }, [id, setError])
 
-  const cancelar = async () => {
-    setConfirmar(false); setError('')
-    try { setPedido(await pedidosApi.cancelarMio(id)); setExito('Pedido cancelado. El stock fue repuesto y te enviamos un correo.') } catch (e) { setError(mensajeDe(e)) }
+  const cancelar = () => {
+    setConfirmar(false)
+    accion.ejecutar(async () => setPedido(await pedidosApi.cancelarMio(id)), 'Pedido cancelado. El stock fue repuesto y te enviamos un correo.')
   }
 
   return (
@@ -30,8 +32,7 @@ export default function DetallePedido() {
       <h1>Mi cuenta</h1>
       <MenuCuenta />
       <Link to="/cuenta/pedidos">← Volver a mis pedidos</Link>
-      <Alerta tipo="error">{error}</Alerta>
-      <Alerta tipo="exito">{exito}</Alerta>
+      <Avisos estado={accion} />
       {!pedido && !error && <Cargando />}
       {pedido && (
         <div className="seccion mt-3">
@@ -60,13 +61,7 @@ export default function DetallePedido() {
               <tbody>{pedido.detalles.map((d) => <tr key={d.id}><td><Link to={`/libros/${d.libroId}`}>{d.tituloLibro}</Link></td><td>{d.cantidad}</td><td>{clp(d.precioUnitario)}</td><td>{clp(d.subtotal)}</td></tr>)}</tbody>
             </table>
           </div>
-          <div className="resumen-caja mt-3" style={{ maxWidth: 420, marginLeft: 'auto' }}>
-            <div className="fila"><span>Subtotal</span><span>{clp(pedido.importes.subtotal)}</span></div>
-            {pedido.importes.descuento > 0 && <div className="fila"><span>Descuentos</span><span>−{clp(pedido.importes.descuento)}</span></div>}
-            <div className="fila"><span>Envío</span><span>{clp(pedido.importes.costoEnvio)}</span></div>
-            <div className="fila"><span>Total</span><span>{clp(pedido.importes.total)}</span></div>
-            <small className="text-muted">IVA incluido: {clp(pedido.importes.ivaIncluido)}</small>
-          </div>
+          <ResumenImportes importes={pedido.importes} className="mt-3 resumen-derecha" />
           {pedido.puedeCancelarse && <button type="button" className="btn btn-peligro mt-3" onClick={() => setConfirmar(true)}>Cancelar pedido</button>}
         </div>
       )}

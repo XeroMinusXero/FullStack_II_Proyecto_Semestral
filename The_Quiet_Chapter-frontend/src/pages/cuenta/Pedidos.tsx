@@ -26,7 +26,7 @@ export default function Pedidos() {
       <MenuCuenta />
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <h2 className="mb-0">Mis pedidos</h2>
-        <select value={estado} onChange={(e) => { setEstado(e.target.value as EstadoPedido | ''); setPagina(0) }} aria-label="Filtrar por estado" className="form-select" style={{ maxWidth: 220 }}>
+        <select value={estado} onChange={(e) => { setEstado(e.target.value as EstadoPedido | ''); setPagina(0) }} aria-label="Filtrar por estado" className="form-select selector-corto">
           <option value="">Todos los estados</option>
           {Object.entries(ETIQUETA_ESTADO_PEDIDO).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>

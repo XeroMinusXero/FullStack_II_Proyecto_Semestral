@@ -13,6 +13,7 @@ import type { LibroSugerido } from '../interfaces/promo'
 import estilos from './Catalogo.module.css'
 import { SelectorMultiple } from '../components/comunes/SelectorMultiple'
 import { clp } from '../utils/formato'
+import { validarRangoPrecio } from '../utils/validaciones'
 
 const ORDENES: { valor: OrdenCatalogo | ''; texto: string }[] = [
   { valor: '', texto: 'Título A-Z' },
@@ -100,11 +101,9 @@ export default function Catalogo() {
   }
 
   const aplicarPrecios = () => {
-    if (minimo && maximo && Number(minimo) > Number(maximo)) {
-      setErrorPrecio('El precio mínimo no puede ser superior al máximo')
-      return
-    }
-    setErrorPrecio('')
+    const invalido = validarRangoPrecio(minimo, maximo)
+    setErrorPrecio(invalido ?? '')
+    if (invalido) return
     actualizar({ minimo: minimo || null, maximo: maximo || null })
   }
 

@@ -6,6 +6,8 @@ import { Cargando } from '../../components/comunes/Cargando'
 import { PasosCheckout } from './PasosCheckout'
 import { useProcesoCompra } from './proceso'
 import type { MedioPago } from '../../interfaces/checkout'
+import { OpcionesRadio } from '../../components/comunes/OpcionesRadio'
+import estilos from './Checkout.module.css'
 
 /** checkoutPago.html -> HU-025: medio de pago (pasarela simulada, no se piden datos de tarjeta). */
 export default function CheckoutPago() {
@@ -36,16 +38,14 @@ export default function CheckoutPago() {
       <PasosCheckout actual={3} procesoId={proceso?.id} />
       <Alerta tipo="error">{error}</Alerta>
       {proceso && (
-        <div className="seccion" style={{ maxWidth: 640 }}>
+        <div className={`seccion ${estilos.paso}`}>
           <h2>Medio de pago</h2>
-          {medios === null ? <Cargando /> : medios.map((m) => (
-            <div className="form-check mb-2" key={m.id}>
-              <input className="form-check-input" type="radio" name="medio" id={`med${m.id}`} checked={elegido === m.id} onChange={() => setElegido(m.id)} />
-              <label className="form-check-label" htmlFor={`med${m.id}`}>{m.nombre}</label>
-            </div>
-          ))}
+          {medios === null ? <Cargando /> : (
+            <OpcionesRadio nombre="medio" etiqueta="Medio de pago" valor={elegido} onCambiar={setElegido}
+              opciones={medios.map((m) => ({ valor: m.id, contenido: m.nombre }))} />
+          )}
           <small className="text-muted d-block">Pago simulado con fines académicos: no se solicitan ni almacenan datos de tarjetas.</small>
-          <div className="d-flex justify-content-between gap-2 mt-3">
+          <div className={estilos.acciones}>
             <button type="button" className="btn btn-secundario" onClick={() => navegar('/checkout/envio')}>Volver</button>
             <button type="button" className="btn" disabled={!elegido || enviando} onClick={continuar}>{enviando ? 'Calculando...' : 'Revisar pedido'}</button>
           </div>

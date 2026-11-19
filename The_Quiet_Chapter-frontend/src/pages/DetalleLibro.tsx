@@ -105,7 +105,7 @@ export default function DetalleLibro() {
           )}
           <Precio precio={libro.precio} promo={promo} grande />
           {promo && <small className="text-muted">Oferta «{promo.promocion}» válida hasta el {new Date(promo.vigenteHasta).toLocaleDateString('es-CL')}</small>}
-          <span className={`badge ${libro.disponible ? 'badge-disponible' : 'badge-agotado'}`} style={{ alignSelf: 'flex-start' }}>
+          <span className={`badge ${libro.disponible ? 'badge-disponible' : 'badge-agotado'} no-estirar`}>
             {libro.disponible ? (libro.stock <= 5 ? `Últimas ${libro.stock} unidades` : 'Disponible') : 'Agotado'}
           </span>
 
@@ -127,11 +127,11 @@ export default function DetalleLibro() {
             </div>
           )}
           {mensajeAviso && <small className="text-muted" role="status">{mensajeAviso}</small>}
-          {esAdmin && <Link to={`/admin/catalogo?editar=${libro.id}`} className="btn btn-secundario" style={{ alignSelf: 'flex-start' }}>Editar en el mantenedor</Link>}
+          {esAdmin && <Link to={`/admin/catalogo?editar=${libro.id}`} className="btn btn-secundario no-estirar">Editar en el mantenedor</Link>}
 
           <h3 className="mt-3">Sinopsis</h3>
           <p>{libro.sinopsis || 'Sin sinopsis disponible.'}</p>
-          {libro.tieneExtracto && <button type="button" className="btn btn-secundario" style={{ alignSelf: 'flex-start' }} onClick={() => setMuestra(true)}>📖 Leer muestra</button>}
+          {libro.tieneExtracto && <button type="button" className="btn btn-secundario no-estirar" onClick={() => setMuestra(true)}>📖 Leer muestra</button>}
 
           <h3 className="mt-3">Ficha técnica</h3>
           <div className="tabla-scroll">
@@ -148,7 +148,7 @@ export default function DetalleLibro() {
       <ListaSugeridos titulo="También te puede interesar" libros={relacionados} />
 
       <Modal abierto={muestra} titulo={`Muestra: ${libro.titulo}`} onCerrar={() => setMuestra(false)} ancho="xl">
-        <iframe src={libro.extractoUrl} title={`Muestra de ${libro.titulo}`} style={{ width: '100%', height: '70vh', border: 0 }} />
+        <iframe src={libro.extractoUrl} title={`Muestra de ${libro.titulo}`} className="visor-muestra" />
       </Modal>
     </>
   )

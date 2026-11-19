@@ -5,11 +5,20 @@ import { MenuAdmin } from '../../components/layout/MenuAdmin'
 import { Alerta } from '../../components/comunes/Alerta'
 import { Cargando } from '../../components/comunes/Cargando'
 import { GraficoBarras } from '../../components/comunes/GraficoBarras'
+import { Pestanas } from '../../components/comunes/Pestanas'
+import { TablaDatos } from '../../components/comunes/TablaDatos'
+import { TarjetaKpi } from '../../components/comunes/TarjetaKpi'
+import { validarRangoFechas } from '../../utils/validaciones'
 import { ETIQUETA_ESTADO_PEDIDO, clp, fecha } from '../../utils/formato'
 import type { Panel, PeriodoRapido, ReporteClientes, ReporteInventario, ReporteLibros, ReporteVentas } from '../../interfaces/reportes'
 
 type Pestana = 'ventas' | 'libros' | 'inventario' | 'clientes'
 const PERIODOS: [PeriodoRapido, string][] = [['HOY', 'Hoy'], ['SEMANA', 'Semana'], ['MES', 'Mes'], ['ANIO', 'Año']]
+const PESTANAS: { valor: Pestana; texto: string }[] = [
+  { valor: 'ventas', texto: 'Ventas' }, { valor: 'libros', texto: 'Libros más/menos vendidos' },
+  { valor: 'inventario', texto: 'Inventario' }, { valor: 'clientes', texto: 'Clientes' },
+]
+const AGRUPACION: Record<Panel['agrupacion'], string> = { DIA: 'día', SEMANA: 'semana', MES: 'mes' }
 
 /** adminDashboard.html -> HU-140..150: KPIs, evolucion, mas/menos vendidos, inventario, clientes y exportacion CSV. */
 export default function Dashboard() {
@@ -23,6 +32,7 @@ export default function Dashboard() {
   const [inventario, setInventario] = useState<ReporteInventario | null>(null)
   const [clientes, setClientes] = useState<ReporteClientes | null>(null)
   const [error, setError] = useState('')
+  const [errorRango, setErrorRango] = useState<string>()
 
   useEffect(() => {
     reportesApi.panel(filtro).then(setPanel).catch((e) => setError(mensajeDe(e)))
@@ -37,9 +47,9 @@ export default function Dashboard() {
   }, [filtro, pestana])
 
   const aplicarRango = () => {
-    if (!desde || !hasta) { setError('Indica fecha desde y hasta'); return }
-    if (desde > hasta) { setError('La fecha desde no puede ser posterior a la fecha hasta'); return }
-    setFiltro({ desde, hasta })
+    const invalido = validarRangoFechas(desde, hasta, true)
+    setErrorRango(invalido)
+    if (!invalido) setFiltro({ desde, hasta })
   }
 
   const exportar = async () => {
@@ -60,24 +70,25 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-        <div className="campo"><label htmlFor="desde">Desde</label><input id="desde" type="date" value={desde} onChange={(e) => setDesde(e.target.value)} /></div>
-        <div className="campo"><label htmlFor="hasta">Hasta</label><input id="hasta" type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} /></div>
+        <div className={`campo${errorRango ? ' error' : ''}`}><label htmlFor="desde">Desde</label><input id="desde" type="date" value={desde} aria-invalid={!!errorRango} onChange={(e) => { setDesde(e.target.value); setErrorRango(undefined) }} /></div>
+        <div className={`campo${errorRango ? ' error' : ''}`}><label htmlFor="hasta">Hasta</label><input id="hasta" type="date" value={hasta} aria-invalid={!!errorRango} onChange={(e) => { setHasta(e.target.value); setErrorRango(undefined) }} /></div>
         <button type="button" className="btn" onClick={aplicarRango}>Aplicar rango</button>
         <button type="button" className="btn btn-secundario empuje" onClick={exportar}>⬇ Exportar CSV</button>
       </div>
+      <Alerta tipo="error" onCerrar={() => setErrorRango(undefined)}>{errorRango}</Alerta>
       <Alerta tipo="error" onCerrar={() => setError('')}>{error}</Alerta>
 
       {!panel ? <Cargando /> : (
         <>
           <p className="text-muted">Mostrando del <strong>{fecha(panel.periodo.fechaDesde)}</strong> al <strong>{fecha(panel.periodo.fechaHasta)}</strong>{filtro.periodo ? '' : ' (rango personalizado)'}</p>
           <div className="kpi-grid">
-            <div className="kpi-card"><div className="etiqueta">Ventas</div><div className="valor">{clp(panel.ventasPeriodo)}</div></div>
-            <div className="kpi-card"><div className="etiqueta">Pedidos</div><div className="valor">{panel.cantidadPedidos}</div></div>
-            <div className="kpi-card"><div className="etiqueta">Ticket promedio</div><div className="valor">{clp(panel.ticketPromedio)}</div></div>
-            <div className="kpi-card"><div className="etiqueta">Clientes registrados</div><div className="valor">{panel.clientesRegistrados}</div></div>
+            <TarjetaKpi etiqueta="Ventas" valor={clp(panel.ventasPeriodo)} />
+            <TarjetaKpi etiqueta="Pedidos" valor={panel.cantidadPedidos} />
+            <TarjetaKpi etiqueta="Ticket promedio" valor={clp(panel.ticketPromedio)} />
+            <TarjetaKpi etiqueta="Clientes registrados" valor={panel.clientesRegistrados} />
           </div>
           <section className="seccion">
-            <h2>Evolución de ventas <small className="text-muted fs-6">(por {{ DIA: 'día', SEMANA: 'semana', MES: 'mes' }[panel.agrupacion]})</small></h2>
+            <h2>Evolución de ventas <small className="text-muted fs-6">(por {AGRUPACION[panel.agrupacion]})</small></h2>
             <GraficoBarras datos={panel.evolucion} />
             {Object.keys(panel.pedidosPorEstado).length > 0 && (
               <p className="mb-0">{Object.entries(panel.pedidosPorEstado).map(([k, v]) => `${ETIQUETA_ESTADO_PEDIDO[k] ?? k}: ${v}`).join(' · ')}</p>
@@ -86,23 +97,17 @@ export default function Dashboard() {
         </>
       )}
 
-      <div className="tabs" role="tablist">
-        {(['ventas', 'libros', 'inventario', 'clientes'] as Pestana[]).map((p) => (
-          <button key={p} type="button" role="tab" aria-selected={pestana === p} className={pestana === p ? 'activo' : undefined} onClick={() => setPestana(p)}>
-            {{ ventas: 'Ventas', libros: 'Libros más/menos vendidos', inventario: 'Inventario', clientes: 'Clientes' }[p]}
-          </button>
-        ))}
-      </div>
+      <Pestanas etiqueta="Reportes" valor={pestana} onCambiar={setPestana} opciones={PESTANAS} />
 
       {pestana === 'ventas' && (!ventas ? <Cargando /> : (
         <div className="row g-4">
           <div className="col-lg-5">
             <h3>Por categoría</h3>
-            <Tabla cabeceras={['Categoría', 'Unidades', 'Monto']} filas={ventas.porCategoria.map((c) => [c.categoriaNombre, c.unidadesVendidas, clp(c.montoTotal)])} />
+            <TablaDatos cabeceras={['Categoría', 'Unidades', 'Monto']} filas={ventas.porCategoria.map((c) => [c.categoriaNombre, c.unidadesVendidas, clp(c.montoTotal)])} />
           </div>
           <div className="col-lg-7">
             <h3>Pedidos del período ({ventas.cantidadPedidos})</h3>
-            <Tabla cabeceras={['N°', 'Fecha', 'Cliente', 'Estado', 'Total']}
+            <TablaDatos cabeceras={['N°', 'Fecha', 'Cliente', 'Estado', 'Total']}
               filas={ventas.pedidos.map((p) => [p.numeroPedido, fecha(p.fecha), p.clienteNombre ?? `#${p.clienteId}`, ETIQUETA_ESTADO_PEDIDO[p.estado] ?? p.estado, clp(p.total)])} />
           </div>
         </div>
@@ -120,10 +125,10 @@ export default function Dashboard() {
         <>
           <div className="reporte-caja mb-3"><strong>Valorización total del inventario:</strong> {clp(inventario.valorTotalInventario)}</div>
           <h3>Rotación por libro</h3>
-          <Tabla cabeceras={['Libro', 'Vendidas', 'Stock', 'Stock prom.', 'Rotación', 'Valor']}
+          <TablaDatos cabeceras={['Libro', 'Vendidas', 'Stock', 'Stock prom.', 'Rotación', 'Valor']}
             filas={inventario.libros.map((l) => [l.titulo, l.unidadesVendidas, l.stockActual, l.stockPromedio.toFixed(1), l.rotacion === null ? '—' : l.rotacion.toFixed(2), clp(l.valorTotal)])} />
           <h3 className="mt-4">Movimientos de inventario</h3>
-          <Tabla cabeceras={['Fecha', 'Libro', 'Tipo', 'Cantidad', 'Responsable']}
+          <TablaDatos cabeceras={['Fecha', 'Libro', 'Tipo', 'Cantidad', 'Responsable']}
             filas={inventario.movimientos.map((m) => [fecha(m.fecha, true), m.tituloLibro, m.tipo, m.cantidad, m.responsableNombre ?? '—'])} />
         </>
       ))}
@@ -131,14 +136,14 @@ export default function Dashboard() {
       {pestana === 'clientes' && (!clientes ? <Cargando /> : (
         <>
           <div className="kpi-grid">
-            <div className="kpi-card"><div className="etiqueta">Clientes nuevos</div><div className="valor">{clientes.clientesNuevos}</div></div>
-            <div className="kpi-card"><div className="etiqueta">Clientes acumulados</div><div className="valor">{clientes.clientesAcumulados}</div></div>
+            <TarjetaKpi etiqueta="Clientes nuevos" valor={clientes.clientesNuevos} />
+            <TarjetaKpi etiqueta="Clientes acumulados" valor={clientes.clientesAcumulados} />
           </div>
           <div className="row g-4">
             <div className="col-lg-6"><h3>Mayores compradores</h3>
-              <Tabla cabeceras={['Cliente', 'Pedidos', 'Monto']} filas={clientes.mayoresCompradores.map((c) => [`${c.nombre} (${c.email})`, c.cantidadPedidosPeriodo, clp(c.montoCompradoPeriodo)])} /></div>
+              <TablaDatos cabeceras={['Cliente', 'Pedidos', 'Monto']} filas={clientes.mayoresCompradores.map((c) => [`${c.nombre} (${c.email})`, c.cantidadPedidosPeriodo, clp(c.montoCompradoPeriodo)])} /></div>
             <div className="col-lg-6"><h3>Sin compras en el período</h3>
-              <Tabla cabeceras={['Cliente', 'Registro']} filas={clientes.sinCompras.map((c) => [`${c.nombre} (${c.email})`, fecha(c.fechaRegistro)])} /></div>
+              <TablaDatos cabeceras={['Cliente', 'Registro']} filas={clientes.sinCompras.map((c) => [`${c.nombre} (${c.email})`, fecha(c.fechaRegistro)])} /></div>
           </div>
         </>
       ))}
@@ -146,20 +151,7 @@ export default function Dashboard() {
   )
 }
 
-function Tabla({ cabeceras, filas }: { cabeceras: string[]; filas: (string | number)[][] }) {
-  return (
-    <div className="tabla-scroll">
-      <table>
-        <thead><tr>{cabeceras.map((c) => <th key={c}>{c}</th>)}</tr></thead>
-        <tbody>
-          {filas.length === 0 && <tr><td colSpan={cabeceras.length}>Sin datos para el período.</td></tr>}
-          {filas.map((f, i) => <tr key={i}>{f.map((v, j) => <td key={j}>{v}</td>)}</tr>)}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
+/** Las tres tablas de la pestana de libros comparten columnas. */
 function TablaLibros({ datos }: { datos: ReporteLibros['masVendidos'] }) {
-  return <Tabla cabeceras={['Libro', 'Autor', 'Unidades', 'Monto', 'Stock']} filas={datos.map((l) => [l.titulo, l.autor, l.unidadesVendidas, clp(l.montoTotal), l.stockActual])} />
+  return <TablaDatos cabeceras={['Libro', 'Autor', 'Unidades', 'Monto', 'Stock']} filas={datos.map((l) => [l.titulo, l.autor, l.unidadesVendidas, clp(l.montoTotal), l.stockActual])} />
 }

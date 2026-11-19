@@ -1,0 +1,3 @@
+/* Ancho de lectura comodo para los pasos 1 a 3 del checkout (antes era style={{ maxWidth: 640 }}). */
+.paso { max-width: 640px; margin-left: auto; margin-right: auto; }
+.acciones { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }

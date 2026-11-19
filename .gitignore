@@ -9,3 +9,6 @@ desktop.ini
 # Respaldos locales que no deben subirse
 *_viejo/
 src_viejo/
+
+# Herramientas locales de VS Code / Copilot
+.github/modernize/

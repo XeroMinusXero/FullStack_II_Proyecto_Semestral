@@ -65,7 +65,7 @@ export default function Notificaciones() {
             </button>
             {abierta === n.id && (
               <div className="mt-2">
-                <p style={{ whiteSpace: 'pre-line' }} className="mb-2">{n.mensaje}</p>
+                <p className="texto-preformado mb-2">{n.mensaje}</p>
                 {ruta && <Link to={ruta} className="btn btn-secundario">Abrir enlace</Link>}
               </div>
             )}

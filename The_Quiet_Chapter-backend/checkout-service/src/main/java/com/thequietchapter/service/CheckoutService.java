@@ -14,7 +14,7 @@ import java.util.*;
 
 /**
  * DC-03. Orquesta la compra completa con pasos compensables entre
- * microservicios (no hay transaccion distribuida).
+ * microservicios
  */
 @Service
 public class CheckoutService {

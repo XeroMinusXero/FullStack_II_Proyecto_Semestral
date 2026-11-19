@@ -1,58 +1,58 @@
 import { useCallback, useEffect, useState } from 'react'
 import { checkoutApi } from '../../api/checkout'
 import { mensajeDe } from '../../api/http'
+import { useAccion } from '../../hooks/useAccion'
 import { MenuAdmin } from '../../components/layout/MenuAdmin'
-import { Alerta } from '../../components/comunes/Alerta'
+import { Avisos } from '../../components/comunes/Avisos'
 import { Cargando } from '../../components/comunes/Cargando'
 import { Modal } from '../../components/comunes/Modal'
-import { REGIONES } from '../../utils/regiones'
+import { EditorMetodoEnvio, type DatosMetodoEnvioForm } from '../../components/admin/EditorMetodoEnvio'
+import { EditorMedioPago, type DatosMedioPagoForm } from '../../components/admin/EditorMedioPago'
 import { clp } from '../../utils/formato'
 import type { MedioPago, MetodoEnvio } from '../../interfaces/checkout'
 
-type FormEnvio = Omit<MetodoEnvio, 'id'> & { id?: number }
+const ENVIO_NUEVO: DatosMetodoEnvioForm = { nombre: '', costoBase: 0, plazoEstimadoDias: 3, activo: true, regionesHabilitadas: [] }
+const MEDIO_NUEVO: DatosMedioPagoForm = { nombre: '', activo: true }
 
 /** HU-024/025 (lado administrador): metodos de envio por region y medios de pago habilitados. */
 export default function AdminOpciones() {
   const [envios, setEnvios] = useState<MetodoEnvio[] | null>(null)
   const [medios, setMedios] = useState<MedioPago[] | null>(null)
-  const [formEnvio, setFormEnvio] = useState<FormEnvio | null>(null)
-  const [formMedio, setFormMedio] = useState<{ id?: number; nombre: string; activo: boolean } | null>(null)
-  const [error, setError] = useState('')
-  const [exito, setExito] = useState('')
+  const [editorEnvio, setEditorEnvio] = useState<{ id?: number; inicial: DatosMetodoEnvioForm } | null>(null)
+  const [editorMedio, setEditorMedio] = useState<{ id?: number; inicial: DatosMedioPagoForm } | null>(null)
+  const accion = useAccion()
+  const { setError } = accion
 
   const cargar = useCallback(() => {
     checkoutApi.adminEnvios().then(setEnvios).catch((e) => setError(mensajeDe(e)))
     checkoutApi.adminMedios().then(setMedios).catch((e) => setError(mensajeDe(e)))
-  }, [])
+  }, [setError])
   useEffect(() => { cargar() }, [cargar])
 
-  const accion = async (fn: () => Promise<unknown>, ok: string) => {
-    setError(''); setExito('')
-    try { await fn(); setExito(ok); cargar(); return true } catch (e) { setError(mensajeDe(e)); return false }
+  const guardarEnvio = async (m: DatosMetodoEnvioForm) => {
+    const id = editorEnvio?.id
+    const ok = await accion.ejecutar(() => (id ? checkoutApi.editarEnvio(id, m) : checkoutApi.crearEnvio(m)), 'Método de envío guardado', cargar)
+    if (ok) setEditorEnvio(null)
+    return ok
   }
 
-  const guardarEnvio = async () => {
-    if (!formEnvio) return
-    if (!formEnvio.nombre.trim() || formEnvio.costoBase < 0 || formEnvio.plazoEstimadoDias < 0) { setError('Revisa nombre, costo y plazo'); return }
-    const { id, ...m } = formEnvio
-    if (await accion(() => (id ? checkoutApi.editarEnvio(id, m) : checkoutApi.crearEnvio(m)), 'Método de envío guardado')) setFormEnvio(null)
+  const guardarMedio = async (m: DatosMedioPagoForm) => {
+    const id = editorMedio?.id
+    const ok = await accion.ejecutar(() => (id ? checkoutApi.editarMedio(id, m) : checkoutApi.crearMedio(m)), 'Medio de pago guardado', cargar)
+    if (ok) setEditorMedio(null)
+    return ok
   }
 
-  const guardarMedio = async () => {
-    if (!formMedio || !formMedio.nombre.trim()) { setError('El nombre es obligatorio'); return }
-    const { id, ...m } = formMedio
-    if (await accion(() => (id ? checkoutApi.editarMedio(id, m) : checkoutApi.crearMedio(m)), 'Medio de pago guardado')) setFormMedio(null)
-  }
+  const estado = (activo: boolean) => <span className={`badge ${activo ? 'badge-disponible' : 'badge-agotado'}`}>{activo ? 'Activo' : 'Inactivo'}</span>
 
   return (
     <>
       <h1>Envíos y medios de pago</h1>
       <MenuAdmin />
-      <Alerta tipo="exito" onCerrar={() => setExito('')}>{exito}</Alerta>
-      <Alerta tipo="error" onCerrar={() => setError('')}>{error}</Alerta>
+      <Avisos estado={accion} />
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h2 className="mb-0">Métodos de envío</h2>
-        <button type="button" className="btn" onClick={() => setFormEnvio({ nombre: '', costoBase: 0, plazoEstimadoDias: 3, activo: true, regionesHabilitadas: [] })}>+ Nuevo método</button>
+        <button type="button" className="btn" onClick={() => setEditorEnvio({ inicial: ENVIO_NUEVO })}>+ Nuevo método</button>
       </div>
       {!envios ? <Cargando /> : (
         <div className="tabla-scroll mb-4">
@@ -63,8 +63,8 @@ export default function AdminOpciones() {
                 <tr key={m.id}>
                   <td>{m.nombre}</td><td>{clp(m.costoBase)}</td><td>{m.plazoEstimadoDias} días</td>
                   <td><small>{m.regionesHabilitadas.length ? m.regionesHabilitadas.join(', ') : 'Todas'}</small></td>
-                  <td><span className={`badge ${m.activo ? 'badge-disponible' : 'badge-agotado'}`}>{m.activo ? 'Activo' : 'Inactivo'}</span></td>
-                  <td><button type="button" className="btn btn-secundario" onClick={() => setFormEnvio({ ...m })}>Editar</button></td>
+                  <td>{estado(m.activo)}</td>
+                  <td><button type="button" className="btn btn-secundario" onClick={() => setEditorEnvio({ id: m.id, inicial: { nombre: m.nombre, costoBase: m.costoBase, plazoEstimadoDias: m.plazoEstimadoDias, activo: m.activo, regionesHabilitadas: m.regionesHabilitadas } })}>Editar</button></td>
                 </tr>
               ))}
             </tbody>
@@ -73,7 +73,7 @@ export default function AdminOpciones() {
       )}
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h2 className="mb-0">Medios de pago</h2>
-        <button type="button" className="btn" onClick={() => setFormMedio({ nombre: '', activo: true })}>+ Nuevo medio</button>
+        <button type="button" className="btn" onClick={() => setEditorMedio({ inicial: MEDIO_NUEVO })}>+ Nuevo medio</button>
       </div>
       {!medios ? <Cargando /> : (
         <div className="tabla-scroll">
@@ -82,9 +82,8 @@ export default function AdminOpciones() {
             <tbody>
               {medios.map((m) => (
                 <tr key={m.id}>
-                  <td>{m.nombre}</td>
-                  <td><span className={`badge ${m.activo ? 'badge-disponible' : 'badge-agotado'}`}>{m.activo ? 'Activo' : 'Inactivo'}</span></td>
-                  <td><button type="button" className="btn btn-secundario" onClick={() => setFormMedio({ ...m })}>Editar</button></td>
+                  <td>{m.nombre}</td><td>{estado(m.activo)}</td>
+                  <td><button type="button" className="btn btn-secundario" onClick={() => setEditorMedio({ id: m.id, inicial: { nombre: m.nombre, activo: m.activo } })}>Editar</button></td>
                 </tr>
               ))}
             </tbody>
@@ -92,42 +91,11 @@ export default function AdminOpciones() {
         </div>
       )}
 
-      <Modal abierto={!!formEnvio} titulo={formEnvio?.id ? 'Editar método de envío' : 'Nuevo método de envío'} onCerrar={() => setFormEnvio(null)}
-        pie={<button type="button" className="btn" onClick={guardarEnvio}>Guardar</button>}>
-        {formEnvio && (
-          <>
-            <label className="form-label" htmlFor="enom">Nombre</label>
-            <input id="enom" className="form-control mb-2" maxLength={120} value={formEnvio.nombre} onChange={(e) => setFormEnvio({ ...formEnvio, nombre: e.target.value })} />
-            <div className="row g-2 mb-2">
-              <div className="col"><label className="form-label" htmlFor="ecosto">Costo (CLP)</label><input id="ecosto" type="number" min={0} className="form-control" value={formEnvio.costoBase} onChange={(e) => setFormEnvio({ ...formEnvio, costoBase: Number(e.target.value) })} /></div>
-              <div className="col"><label className="form-label" htmlFor="eplazo">Plazo (días)</label><input id="eplazo" type="number" min={0} className="form-control" value={formEnvio.plazoEstimadoDias} onChange={(e) => setFormEnvio({ ...formEnvio, plazoEstimadoDias: Number(e.target.value) })} /></div>
-            </div>
-            <label className="form-label">Regiones habilitadas <small className="text-muted">(ninguna = todas)</small></label>
-            <div className="d-flex flex-wrap gap-2 mb-2">
-              {REGIONES.map((r) => {
-                const sel = formEnvio.regionesHabilitadas.includes(r)
-                return (
-                  <div key={r} className="form-check">
-                    <input className="form-check-input" type="checkbox" id={`reg-${r}`} checked={sel}
-                      onChange={() => setFormEnvio({ ...formEnvio, regionesHabilitadas: sel ? formEnvio.regionesHabilitadas.filter((x) => x !== r) : [...formEnvio.regionesHabilitadas, r] })} />
-                    <label className="form-check-label" htmlFor={`reg-${r}`}><small>{r}</small></label>
-                  </div>
-                )
-              })}
-            </div>
-            <div className="form-check"><input className="form-check-input" type="checkbox" id="eact" checked={formEnvio.activo} onChange={(e) => setFormEnvio({ ...formEnvio, activo: e.target.checked })} /><label className="form-check-label" htmlFor="eact">Activo</label></div>
-          </>
-        )}
+      <Modal abierto={!!editorEnvio} titulo={editorEnvio?.id ? 'Editar método de envío' : 'Nuevo método de envío'} onCerrar={() => setEditorEnvio(null)}>
+        {editorEnvio && <EditorMetodoEnvio key={editorEnvio.id ?? 'nuevo'} inicial={editorEnvio.inicial} onGuardar={guardarEnvio} />}
       </Modal>
-      <Modal abierto={!!formMedio} titulo={formMedio?.id ? 'Editar medio de pago' : 'Nuevo medio de pago'} onCerrar={() => setFormMedio(null)} ancho="sm"
-        pie={<button type="button" className="btn" onClick={guardarMedio}>Guardar</button>}>
-        {formMedio && (
-          <>
-            <label className="form-label" htmlFor="mnom">Nombre</label>
-            <input id="mnom" className="form-control mb-2" maxLength={120} value={formMedio.nombre} onChange={(e) => setFormMedio({ ...formMedio, nombre: e.target.value })} />
-            <div className="form-check"><input className="form-check-input" type="checkbox" id="mact" checked={formMedio.activo} onChange={(e) => setFormMedio({ ...formMedio, activo: e.target.checked })} /><label className="form-check-label" htmlFor="mact">Activo</label></div>
-          </>
-        )}
+      <Modal abierto={!!editorMedio} titulo={editorMedio?.id ? 'Editar medio de pago' : 'Nuevo medio de pago'} onCerrar={() => setEditorMedio(null)} ancho="sm">
+        {editorMedio && <EditorMedioPago key={editorMedio.id ?? 'nuevo'} inicial={editorMedio.inicial} onGuardar={guardarMedio} />}
       </Modal>
     </>
   )

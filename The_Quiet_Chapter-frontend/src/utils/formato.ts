@@ -29,3 +29,8 @@ export function claseEstado(estado: string): string {
 }
 
 export const hoyIso = () => new Date().toISOString().slice(0, 10)
+
+/** "15%" o "$5.000", segun el tipo de descuento de un cupon o promocion. */
+export function textoDescuento(tipo: 'PORCENTAJE' | 'MONTO_FIJO', valor: number): string {
+  return tipo === 'PORCENTAJE' ? `${valor}%` : clp(valor)
+}

@@ -20,7 +20,7 @@ export function Portada({ url, titulo, variante = 'tarjeta', id = 0 }: {
   }
   if (variante === 'mini') {
     return <div className={`${clase} ${estilos.portada}`} role="img" aria-label={`Portada de ${titulo}`}
-      style={{ backgroundImage: `url('${url}')`, color: 'transparent', fontSize: 0 }} />
+      style={{ backgroundImage: `url('${url}')` }} />
   }
   return (
     <div className={`${clase} ${estilos.portada} ${estilos.conImagen}`} role="img" aria-label={`Portada de ${titulo}`}

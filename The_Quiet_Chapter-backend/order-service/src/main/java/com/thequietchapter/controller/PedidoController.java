@@ -1,5 +1,6 @@
 package com.thequietchapter.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import com.thequietchapter.dto.*;
 import com.thequietchapter.model.CriteriosPedido;
 import com.thequietchapter.model.EstadoPedido;
@@ -27,6 +28,7 @@ public class PedidoController {
     }
 
     // ------------------------------------------------------------ cliente
+    @Operation(summary = "[Cliente] Mis pedidos (paginado, filtro por estado)", tags = "Mis pedidos")
     @GetMapping("/mis-pedidos")
     public PaginaPedidosRespuesta misPedidos(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
@@ -38,12 +40,14 @@ public class PedidoController {
         return service.filtrar(cliente, new CriteriosPedido(estado, fechaDesde, fechaHasta), pagina, tamano);
     }
 
+    @Operation(summary = "[Cliente] Detalle de uno de mis pedidos", tags = "Mis pedidos")
     @GetMapping("/mis-pedidos/{id}")
     public PedidoRespuesta miPedido(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id) {
         return service.consultarPropio(auth.requerida(a).usuarioId(), id);
     }
 
+    @Operation(summary = "[Cliente] Buscar uno de mis pedidos por número", tags = "Mis pedidos")
     @GetMapping("/mis-pedidos/numero/{numero}")
     public PedidoRespuesta miPedidoPorNumero(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
@@ -51,6 +55,7 @@ public class PedidoController {
         return service.buscarPorNumero(auth.requerida(a).usuarioId(), numero);
     }
 
+    @Operation(summary = "[Cliente] Cancelar mi pedido (antes del envío)", description = "Repone el stock y notifica por correo.", tags = "Mis pedidos")
     @PostMapping("/mis-pedidos/{id}/cancelar")
     public PedidoRespuesta cancelarPropio(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id) {
@@ -58,6 +63,7 @@ public class PedidoController {
     }
 
     // ------------------------------------------------------------ administrador
+    @Operation(summary = "[Admin] Listar pedidos (filtro por estado y fechas)", tags = "Gestión de pedidos")
     @GetMapping
     public PaginaPedidosRespuesta listado(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @RequestParam(required = false) EstadoPedido estado,
@@ -68,6 +74,7 @@ public class PedidoController {
         return service.listarAdmin(new CriteriosPedido(estado, fechaDesde, fechaHasta), pagina, tamano);
     }
 
+    @Operation(summary = "[Admin] Buscar un pedido por número", tags = "Gestión de pedidos")
     @GetMapping("/numero/{numero}")
     public PedidoRespuesta porNumero(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable String numero) {
@@ -75,6 +82,7 @@ public class PedidoController {
         return service.buscarNumeroAdmin(numero);
     }
 
+    @Operation(summary = "[Admin] Detalle de un pedido", tags = "Gestión de pedidos")
     @GetMapping("/{id}")
     public PedidoRespuesta detalle(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id) {
@@ -82,6 +90,7 @@ public class PedidoController {
         return service.consultarAdmin(id);
     }
 
+    @Operation(summary = "[Admin] Cambiar el estado de un pedido", description = "Transiciones válidas: PAGADO → EN_PREPARACION → ENVIADO → ENTREGADO. Notifica al cliente.", tags = "Gestión de pedidos")
     @PutMapping("/{id}/estado")
     public PedidoRespuesta estado(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @Valid @RequestBody EstadoPedidoSolicitud s) {
@@ -89,6 +98,7 @@ public class PedidoController {
         return service.cambiarEstado(id, s.estado());
     }
 
+    @Operation(summary = "[Admin] Registrar el número de seguimiento", tags = "Gestión de pedidos")
     @PutMapping("/{id}/seguimiento")
     public PedidoRespuesta seguimiento(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id, @Valid @RequestBody SeguimientoSolicitud s) {
@@ -96,6 +106,7 @@ public class PedidoController {
         return service.seguimiento(id, s.numeroSeguimiento());
     }
 
+    @Operation(summary = "[Admin] Cancelar un pedido", tags = "Gestión de pedidos")
     @PostMapping("/{id}/cancelar")
     public PedidoRespuesta cancelarAdmin(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String a,
             @PathVariable Long id) {
